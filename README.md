@@ -1,22 +1,38 @@
-# Sistema de Gestão de Concessionária de Veículos
+Sistema de Gestão de Concessionária
+Este projeto é um sistema web para gestão de concessionárias de veículos desenvolvido como atividade prática da disciplina de Engenharia de Software.
 
-Este projeto é um sistema web voltado para o gerenciamento completo de uma concessionária de veículos, permitindo o controle de estoque de automóveis, cadastro de clientes, gerenciamento de vendedores e registro de vendas. Desenvolvido para a disciplina de Engenharia de Software.
+🛠️ Tecnologias Utilizadas
+Backend: Java com Spring Boot (rodando na porta 8080)
 
----
+Frontend: Angular (rodando na porta 4200)
 
-## 👥 Equipe
-* **Integrante 1** - [GitHub](https://github.com/laysabeatriizz) - laysa.beatriz@ufape.edu.br
-* **Integrante 2** - [GitHub](https://github.com/LuanaSiqueira-1) -
-* * **Integrante 3** - [GitHub](https://github.com/)
-* * **Integrante 4** - [GitHub](https://github.com/)
+👥 Integrantes do Grupo
+Laysa Beatriz do Nascimento Beserra
 
----
+Matrícula: 200751129
 
-## 📌 Links Rápidos
-* [Quadro Scrum (GitHub Projects)](https://github.com/orgs/SistemaConcessionaria-de-Veiculos/projects/1)
+GitHub: @laysabeatriizz
 
----
+E-mail: laysa.beatriz@ufape.edu.br
 
-## 🛠️ Estrutura do Projeto
-* `/frontend`: Interface do usuário desenvolvida em Angular.
-* `/backend`: API e lógica de negócios desenvolvida em Java com Spring Boot.
+[Nome do Integrante 2] - Matrícula: XXXXXX
+
+[Nome do Integrante 3] - Matrícula: XXXXXX
+
+🚀 Como Executar o Projeto
+Backend
+Acesse a pasta /backend.
+
+Execute o comando para rodar a aplicação Spring Boot:
+./mvnw spring-boot:run
+
+Frontend
+Acesse a pasta /frontend.
+
+Instale as dependências necessárias do projeto:
+npm install
+
+Execute o comando para iniciar o servidor de desenvolvimento do Angular:
+ng serve
+
+Abra o navegador no endereço http://localhost:4200/
