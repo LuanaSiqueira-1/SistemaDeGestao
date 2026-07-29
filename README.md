@@ -15,11 +15,33 @@ GitHub: @laysabeatriizz
 
 E-mail: laysa.beatriz@ufape.edu.br
 
-[Nome do Integrante 2] - Matrícula: XXXXXX
+Ricardo Matias de Lima
 
-[Nome do Integrante 3] - Matrícula: XXXXXX
+Matrícula: 200751121
+
+GitHub: @RicardoMatiassl
+
+E-mail: ricardo.matias@ufape.edu.br
+
+Luana Siqueira de Sousa
+
+Matrícula: XXXXXX
+
+GitHub: @LuanaSiqueira-1
+
+E-mail: luana.siqueira@ufape.edu.br 
+
+Riana de Queiroz Tenorio Vaz
+
+Matricula: XXXXXX
+
+GitHub: @riannavaz
+
+E-mail: rianna.vaz@ufape.edu.br
+
 
 🚀 Como Executar o Projeto
+
 Backend
 Acesse a pasta /backend.
 
