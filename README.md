@@ -13,7 +13,7 @@ Este projeto é um sistema web voltado para o gerenciamento completo de uma conc
 ---
 
 ## 📌 Links Rápidos
-* [Quadro Scrum (GitHub Projects)](COLE_O_LINK_DO_QUADRO_AQUI)
+* [Quadro Scrum (GitHub Projects)](https://github.com/orgs/SistemaConcessionaria-de-Veiculos/projects/1)
 
 ---
 
