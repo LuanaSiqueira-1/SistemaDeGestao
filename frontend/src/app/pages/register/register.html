@@ -1,0 +1,52 @@
+<div class="register-container">
+  <h1>Criar conta</h1>
+
+  <form>
+    <div>
+      <label for="name">Nome</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        [(ngModel)]="name"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="email">E-mail</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        [(ngModel)]="email"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="password">Senha</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="role">Tipo de usuário</label>
+      <select
+        id="role"
+        name="role"
+        [(ngModel)]="role"
+      >
+        <option value="USER">Usuário</option>
+        <option value="ADMIN">Administrador</option>
+      </select>
+    </div>
+
+    <button type="submit">Cadastrar</button>
+  </form>
+</div>
