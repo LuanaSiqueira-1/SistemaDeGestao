@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -47,16 +46,19 @@ public class SecurityConfig {
     // 2. Provedor temporário de usuários (Simula a busca até a persistência da Rianna rodar)
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> {
-            throw new UsernameNotFoundException("Usuário não encontrado via persistência base.");
-        };
+        return username -> org.springframework.security.core.userdetails.User
+                .withUsername(username)
+                .password(passwordEncoder().encode("senha123"))
+                .roles("USER")
+                .build();
     }
 
     // 3. Define como validar a senha criptografada
+    
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        // Passamos o método userDetailsService() direto no construtor, como a nova versão exige!
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
