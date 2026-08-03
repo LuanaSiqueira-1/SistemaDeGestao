@@ -56,7 +56,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         // Passamos o método userDetailsService() direto no construtor, como a nova versão exige!
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
+        //DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
+        //authProvider.setPasswordEncoder(passwordEncoder());
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+        authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
