@@ -1,11 +1,14 @@
 package com.concessionaria.backend.dto;
 
-import com.concessionaria.backend.model.Role;
+public class AuthResponse {
+    private String token;
 
-public record AuthResponse(
-        String token,
-        String nome,
-        String email,
-        Role role
-) {
+    public AuthResponse() {}
+
+    public AuthResponse(String token) {
+        this.token = token;
+    }
+
+    public String getToken() { return token; }
+    public void setToken(String token) { this.token = token; }
 }
