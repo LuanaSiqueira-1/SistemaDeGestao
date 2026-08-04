@@ -1,10 +1,11 @@
 package com.concessionaria.backend.service;
 
-import com.concessionaria.backend.dto.AuthResponse;
+import com.concessionaria.backend.dto.RegisterResponse;
 import com.concessionaria.backend.dto.RegisterRequest;
 import com.concessionaria.backend.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.concessionaria.backend.exception.EmailJaCadastradoException;
 
 @Service
 public class AuthenticationService {
@@ -20,11 +21,11 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AuthResponse cadastrar(RegisterRequest request) {
+    public RegisterResponse cadastrar(RegisterRequest request) {
         String emailNormalizado = request.email().trim().toLowerCase();
 
         if (userService.emailJaCadastrado(emailNormalizado)) {
-            throw new IllegalArgumentException("E-mail já cadastrado");
+        	throw new EmailJaCadastradoException();
         }
 
         User user = new User(
@@ -37,8 +38,8 @@ public class AuthenticationService {
 
         User usuarioSalvo = userService.salvar(user);
 
-        return new AuthResponse(
-                null,
+        return new RegisterResponse(
+                usuarioSalvo.getId(),
                 usuarioSalvo.getNome(),
                 usuarioSalvo.getEmail(),
                 usuarioSalvo.getRole()

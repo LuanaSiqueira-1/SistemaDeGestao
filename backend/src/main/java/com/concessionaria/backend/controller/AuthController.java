@@ -1,7 +1,7 @@
 package com.concessionaria.backend.controller;
 
-import com.concessionaria.backend.dto.AuthResponse;
 import com.concessionaria.backend.dto.RegisterRequest;
+import com.concessionaria.backend.dto.RegisterResponse;
 import com.concessionaria.backend.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(
-            @Valid @RequestBody RegisterRequest request
+    public ResponseEntity<RegisterResponse> register(
+    @Valid @RequestBody RegisterRequest request
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
