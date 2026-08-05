@@ -1,11 +1,14 @@
 <div class="login-page">
   <section class="login-card">
     <header class="login-header">
-      <h1>Entrar</h1>
-      <p>Acesse sua conta</p>
+      <h1>{{ usuarioLogado ? 'Sessão ativa' : 'Entrar' }}</h1>
+      <p>
+        {{ usuarioLogado ? 'Você está conectado' : 'Acesse sua conta' }}
+      </p>
     </header>
 
     <form
+      *ngIf="!usuarioLogado"
       class="login-form"
       #formulario="ngForm"
       (ngSubmit)="entrar(formulario)"
@@ -42,10 +45,6 @@
         />
       </div>
 
-      <p class="success-message" *ngIf="mensagemSucesso">
-        {{ mensagemSucesso }}
-      </p>
-
       <p class="error-message" *ngIf="mensagemErro">
         {{ mensagemErro }}
       </p>
@@ -57,16 +56,27 @@
       >
         {{ enviando ? 'Entrando...' : 'Entrar' }}
       </button>
+    </form>
+
+    <div class="logged-area" *ngIf="usuarioLogado">
+      <p class="success-message">
+        {{ mensagemSucesso || 'Usuário conectado com sucesso.' }}
+      </p>
 
       <button
         class="logout-button"
         type="button"
-        *ngIf="usuarioLogado"
-        [disabled]="enviando"
         (click)="sair()"
       >
         Sair
       </button>
-    </form>
+    </div>
+
+    <p
+      class="success-message logout-message"
+      *ngIf="!usuarioLogado && mensagemSucesso"
+    >
+      {{ mensagemSucesso }}
+    </p>
   </section>
 </div>

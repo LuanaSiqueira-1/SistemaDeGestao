@@ -129,3 +129,18 @@
   color: #991b1b;
   text-align: center;
 }
+
+.logged-area {
+  background: white;
+  padding: 34px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.logged-area .logout-button {
+  margin-top: 0;
+}
+
+.logout-message {
+  margin-top: 16px;
+}
