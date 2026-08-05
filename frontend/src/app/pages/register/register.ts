@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+} from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { finalize } from 'rxjs';
 
 import {
   Auth,
@@ -26,7 +28,10 @@ export class Register {
   mensagemErro = '';
   enviando = false;
 
-  constructor(private readonly authService: Auth) {}
+  constructor(
+    private readonly authService: Auth,
+    private readonly changeDetector: ChangeDetectorRef,
+  ) {}
 
   cadastrar(formulario: NgForm): void {
     this.mensagemSucesso = '';
@@ -47,44 +52,46 @@ export class Register {
 
     this.enviando = true;
 
-    this.authService
-      .register(dados)
-      .pipe(
-        finalize(() => {
-          this.enviando = false;
-        }),
-      )
-      .subscribe({
-        next: (response) => {
-          this.mensagemSucesso =
-            `Usuário ${response.nome} cadastrado com sucesso.`;
+    this.authService.register(dados).subscribe({
+      next: (response) => {
+        this.enviando = false;
 
-          formulario.resetForm({
-            nome: '',
-            email: '',
-            senha: '',
-            role: 'USER',
-          });
+        this.mensagemSucesso =
+          `Usuário ${response.nome} cadastrado com sucesso.`;
 
-          this.nome = '';
-          this.email = '';
-          this.senha = '';
-          this.role = 'USER';
-        },
+        formulario.resetForm({
+          nome: '',
+          email: '',
+          senha: '',
+          role: 'USER',
+        });
 
-        error: (error: HttpErrorResponse) => {
+        this.nome = '';
+        this.email = '';
+        this.senha = '';
+        this.role = 'USER';
+
+        this.changeDetector.detectChanges();
+      },
+
+      error: (error: HttpErrorResponse) => {
+        this.enviando = false;
+
+        if (error.status === 409) {
+          this.mensagemErro =
+            error.error?.erro ?? 'E-mail já cadastrado.';
+        } else {
           this.mensagemErro = this.obterMensagemErro(error);
-        },
-      });
+        }
+
+        this.changeDetector.detectChanges();
+      },
+    });
   }
 
   private obterMensagemErro(error: HttpErrorResponse): string {
     if (error.status === 0) {
       return 'Não foi possível conectar ao servidor.';
-    }
-
-    if (error.status === 409) {
-      return error.error?.erro ?? 'Este e-mail já está cadastrado.';
     }
 
     if (error.status === 400 && error.error) {
@@ -93,7 +100,10 @@ export class Register {
       }
 
       const mensagens = Object.values(error.error)
-        .filter((mensagem) => typeof mensagem === 'string')
+        .filter(
+          (mensagem): mensagem is string =>
+            typeof mensagem === 'string',
+        )
         .join(' ');
 
       return mensagens || 'Verifique os dados informados.';
