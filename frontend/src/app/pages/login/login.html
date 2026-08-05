@@ -23,6 +23,7 @@
           autocomplete="email"
           required
           email
+          [disabled]="enviando"
         />
       </div>
 
@@ -37,6 +38,7 @@
           placeholder="Digite sua senha"
           autocomplete="current-password"
           required
+          [disabled]="enviando"
         />
       </div>
 
@@ -54,6 +56,16 @@
         [disabled]="enviando"
       >
         {{ enviando ? 'Entrando...' : 'Entrar' }}
+      </button>
+
+      <button
+        class="logout-button"
+        type="button"
+        *ngIf="usuarioLogado"
+        [disabled]="enviando"
+        (click)="sair()"
+      >
+        Sair
       </button>
     </form>
   </section>
