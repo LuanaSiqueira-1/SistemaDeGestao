@@ -3,7 +3,7 @@
   min-height: 100vh;
 }
 
-.register-page {
+.login-page {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -13,29 +13,29 @@
   box-sizing: border-box;
 }
 
-.register-card {
+.login-card {
   width: 100%;
   max-width: 500px;
 }
 
-.register-header {
+.login-header {
   text-align: center;
   margin-bottom: 28px;
 }
 
-.register-header h1 {
+.login-header h1 {
   margin: 0;
   font-size: 38px;
   color: #1f2937;
 }
 
-.register-header p {
+.login-header p {
   margin: 8px 0 0;
   color: #6b7280;
   font-size: 16px;
 }
 
-.register-form {
+.login-form {
   background: white;
   padding: 34px;
   border-radius: 16px;
@@ -54,8 +54,7 @@
   color: #1f2937;
 }
 
-.form-group input,
-.form-group select {
+.form-group input {
   width: 100%;
   height: 50px;
   padding: 0 14px;
@@ -63,33 +62,52 @@
   border-radius: 10px;
   font-size: 16px;
   box-sizing: border-box;
-  background: white;
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.form-group input:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-.register-button {
+.form-group input:disabled {
+  background: #f8fafc;
+  cursor: not-allowed;
+}
+
+.login-button,
+.logout-button {
   width: 100%;
   height: 52px;
-  border: none;
   border-radius: 10px;
-  background: #2563eb;
-  color: white;
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
 }
 
-.register-button:hover:not(:disabled) {
+.login-button {
+  border: none;
+  background: #2563eb;
+  color: white;
+}
+
+.login-button:hover:not(:disabled) {
   background: #1d4ed8;
 }
 
-.register-button:disabled {
+.logout-button {
+  margin-top: 12px;
+  border: 1px solid #dc2626;
+  background: white;
+  color: #dc2626;
+}
+
+.logout-button:hover:not(:disabled) {
+  background: #fee2e2;
+}
+
+.login-button:disabled,
+.logout-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
@@ -110,4 +128,19 @@
   background: #fee2e2;
   color: #991b1b;
   text-align: center;
+}
+
+.logged-area {
+  background: white;
+  padding: 34px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.logged-area .logout-button {
+  margin-top: 0;
+}
+
+.logout-message {
+  margin-top: 16px;
 }

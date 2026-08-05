@@ -1,60 +1,60 @@
-Sistema de Gestão de Concessionária
-Este projeto é um sistema web para gestão de concessionárias de veículos desenvolvido como atividade prática da disciplina de Engenharia de Software.
+# Sistema de Gestão de Concessionária
 
-🛠️ Tecnologias Utilizadas
-Backend: Java com Spring Boot (rodando na porta 8080)
+Este projeto é um sistema web para gestão de concessionárias de veículos, desenvolvido como atividade prática da disciplina de Engenharia de Software.
 
-Frontend: Angular (rodando na porta 4200)
+## 🛠️ Tecnologias utilizadas
 
-👥 Integrantes do Grupo
-Laysa Beatriz do Nascimento Beserra
+- Backend: Java 21 com Spring Boot
+- Frontend: Angular
+- Banco de dados: MySQL 8
+- Persistência: Spring Data JPA e Hibernate
+- Segurança: Spring Security
+- Autenticação: JWT
+- Backend disponível em: `http://localhost:8080`
+- Frontend disponível em: `http://localhost:4200`
 
-Matrícula: 200751129
+## 👥 Integrantes do grupo
 
-GitHub: @laysabeatriizz
+### Laysa Beatriz do Nascimento Beserra
 
-E-mail: laysa.beatriz@ufape.edu.br
+- Matrícula: 200751129
+- GitHub: @laysabeatriizz
+- E-mail: laysa.beatriz@ufape.edu.br
 
-Ricardo Matias de Lima
+### Ricardo Matias de Lima
 
-Matrícula: 200751121
+- Matrícula: 200751121
+- GitHub: @RicardoMatiassl
+- E-mail: ricardo.matias@ufape.edu.br
 
-GitHub: @RicardoMatiassl
+### Luana Siqueira de Sousa
 
-E-mail: ricardo.matias@ufape.edu.br
+- Matrícula: XXXXXX
+- GitHub: @LuanaSiqueira-1
+- E-mail: luana.siqueira@ufape.edu.br
 
-Luana Siqueira de Sousa
+### Riana de Queiroz Tenorio Vaz
 
-Matrícula: XXXXXX
+- Matrícula: XXXXXX
+- GitHub: @riannavaz
+- E-mail: rianna.vaz@ufape.edu.br
 
-GitHub: @LuanaSiqueira-1
+## ✅ Pré-requisitos
 
-E-mail: luana.siqueira@ufape.edu.br 
+Antes de executar o projeto, instale:
 
-Riana de Queiroz Tenorio Vaz
+- Java 21
+- Node.js e npm
+- MySQL Server 8
+- Git
 
-Matricula: XXXXXX
+O Angular CLI pode ser instalado globalmente, mas o projeto também pode ser executado pelo comando `npm start`.
 
-GitHub: @riannavaz
+## 🗄️ Configuração do banco de dados
 
-E-mail: rianna.vaz@ufape.edu.br
+O MySQL Server 8 precisa estar instalado e em execução.
 
+No Windows, verifique o serviço com:
 
-🚀 Como Executar o Projeto
-
-Backend
-Acesse a pasta /backend.
-
-Execute o comando para rodar a aplicação Spring Boot:
-./mvnw spring-boot:run
-
-Frontend
-Acesse a pasta /frontend.
-
-Instale as dependências necessárias do projeto:
-npm install
-
-Execute o comando para iniciar o servidor de desenvolvimento do Angular:
-ng serve
-
-Abra o navegador no endereço http://localhost:4200/
+```powershell
+Get-Service MySQL80
