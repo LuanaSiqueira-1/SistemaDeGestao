@@ -1,0 +1,27 @@
+.admin-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: #f4f6f8;
+}
+
+.admin-card {
+  width: 100%;
+  max-width: 560px;
+  padding: 36px;
+  text-align: center;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.admin-card h1 {
+  margin-bottom: 12px;
+}
+
+.admin-card p {
+  margin: 0;
+  color: #555;
+}
