@@ -1,52 +1,89 @@
-<div class="register-container">
-  <h1>Criar conta</h1>
+<div class="register-page">
+  <section class="register-card">
+    <header class="register-header">
+      <h1>Criar conta</h1>
+      <p>Preencha os dados para se cadastrar</p>
+    </header>
 
-  <form>
-    <div>
-      <label for="name">Nome</label>
-      <input
-        id="name"
-        name="name"
-        type="text"
-        [(ngModel)]="name"
-        required
-      />
-    </div>
+    <form
+      class="register-form"
+      #formulario="ngForm"
+      (ngSubmit)="cadastrar(formulario)"
+      autocomplete="off"
+    >
+      <div class="form-group">
+        <label for="nome">Nome completo</label>
 
-    <div>
-      <label for="email">E-mail</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        [(ngModel)]="email"
-        required
-      />
-    </div>
+        <input
+          id="nome"
+          type="text"
+          name="nome"
+          [(ngModel)]="nome"
+          placeholder="Digite seu nome"
+          autocomplete="off"
+          required
+        />
+      </div>
 
-    <div>
-      <label for="password">Senha</label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        [(ngModel)]="password"
-        required
-      />
-    </div>
+      <div class="form-group">
+        <label for="email">E-mail</label>
 
-    <div>
-      <label for="role">Tipo de usuário</label>
-      <select
-        id="role"
-        name="role"
-        [(ngModel)]="role"
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          placeholder="Digite seu e-mail"
+          autocomplete="off"
+          required
+          email
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+
+        <input
+          id="senha"
+          type="password"
+          name="senha"
+          [(ngModel)]="senha"
+          placeholder="Digite sua senha"
+          autocomplete="new-password"
+          minlength="6"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="role">Tipo de usuário</label>
+
+        <select
+          id="role"
+          name="role"
+          [(ngModel)]="role"
+          required
+        >
+          <option value="USER">Usuário</option>
+          <option value="ADMIN">Administrador</option>
+        </select>
+      </div>
+
+      <p class="success-message" *ngIf="mensagemSucesso">
+        {{ mensagemSucesso }}
+      </p>
+
+      <p class="error-message" *ngIf="mensagemErro">
+        {{ mensagemErro }}
+      </p>
+
+      <button
+        class="register-button"
+        type="submit"
+        [disabled]="enviando"
       >
-        <option value="USER">Usuário</option>
-        <option value="ADMIN">Administrador</option>
-      </select>
-    </div>
-
-    <button type="submit">Cadastrar</button>
-  </form>
+        {{ enviando ? 'Cadastrando...' : 'Cadastrar' }}
+      </button>
+    </form>
+  </section>
 </div>
