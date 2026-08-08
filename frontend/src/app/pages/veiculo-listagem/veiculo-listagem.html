@@ -1,0 +1,68 @@
+<div class="veiculo-page">
+  <section class="veiculo-card">
+    <header class="veiculo-header">
+      <h1>Veículos cadastrados</h1>
+      <p>Consulte os veículos disponíveis no sistema</p>
+    </header>
+
+    <p
+      class="loading-message"
+      *ngIf="carregando"
+    >
+      Carregando veículos...
+    </p>
+
+    <p
+      class="error-message"
+      *ngIf="mensagemErro"
+    >
+      {{ mensagemErro }}
+    </p>
+
+    <div
+      class="empty-message"
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        veiculos.length === 0
+      "
+    >
+      Nenhum veículo cadastrado.
+    </div>
+
+    <div
+      class="veiculos-lista"
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        veiculos.length > 0
+      "
+    >
+      <article
+        class="veiculo-item"
+        *ngFor="let veiculo of veiculos"
+      >
+        <div class="veiculo-info">
+          <h2>
+            {{ veiculo.marca }} {{ veiculo.modelo }}
+          </h2>
+
+          <p>
+            <strong>Ano:</strong>
+            {{ veiculo.ano }}
+          </p>
+
+          <p>
+            <strong>Preço:</strong>
+            {{ veiculo.preco | currency:'BRL' }}
+          </p>
+
+          <p>
+            <strong>Status:</strong>
+            {{ veiculo.status }}
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>

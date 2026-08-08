@@ -7,6 +7,7 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { VeiculoCadastro } from './pages/veiculo-cadastro/veiculo-cadastro';
+import { VeiculoListagem } from './pages/veiculo-listagem/veiculo-listagem';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,11 @@ export const routes: Routes = [
   {
     path: 'veiculos/cadastro',
     component: VeiculoCadastro,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'veiculos',
+    component: VeiculoListagem,
     canActivate: [authGuard],
   },
   {
