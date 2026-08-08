@@ -144,3 +144,45 @@
 .logout-message {
   margin-top: 16px;
 }
+
+.register-link {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.register-link span {
+  margin-right: 6px;
+}
+
+.register-link a {
+  color: #2563eb;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+.register-link {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.register-link span {
+  margin-right: 6px;
+}
+
+.register-link a {
+  color: #2563eb;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
