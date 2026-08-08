@@ -2,6 +2,7 @@
   <section class="login-card">
     <header class="login-header">
       <h1>{{ usuarioLogado ? 'Sessão ativa' : 'Entrar' }}</h1>
+
       <p>
         {{ usuarioLogado ? 'Você está conectado' : 'Acesse sua conta' }}
       </p>
@@ -56,6 +57,11 @@
       >
         {{ enviando ? 'Entrando...' : 'Entrar' }}
       </button>
+
+      <div class="register-link">
+        <span>Não possui uma conta?</span>
+        <a routerLink="/register">Cadastre-se</a>
+      </div>
     </form>
 
     <div class="logged-area" *ngIf="usuarioLogado">

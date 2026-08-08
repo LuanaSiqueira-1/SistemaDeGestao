@@ -5,6 +5,10 @@ import {
   Component,
 } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import {
+  Router,
+  RouterLink,
+} from '@angular/router';
 
 import {
   Auth,
@@ -13,7 +17,7 @@ import {
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -29,6 +33,7 @@ export class Login {
   constructor(
     private readonly authService: Auth,
     private readonly changeDetector: ChangeDetectorRef,
+    private readonly router: Router,
   ) {}
 
   entrar(formulario: NgForm): void {
@@ -72,6 +77,8 @@ export class Login {
         this.password = '';
 
         this.atualizarTela();
+
+        this.router.navigate(['/dashboard']);
       },
 
       error: (error: HttpErrorResponse) => {
@@ -106,6 +113,8 @@ export class Login {
     this.mensagemSucesso = 'Sessão encerrada com sucesso.';
 
     this.atualizarTela();
+
+    this.router.navigate(['/login']);
   }
 
   private possuiSessao(): boolean {

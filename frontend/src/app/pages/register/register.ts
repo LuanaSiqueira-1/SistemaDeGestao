@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import {
   ChangeDetectorRef,
   Component,
@@ -28,10 +29,11 @@ export class Register {
   mensagemErro = '';
   enviando = false;
 
-  constructor(
-    private readonly authService: Auth,
-    private readonly changeDetector: ChangeDetectorRef,
-  ) {}
+constructor(
+  private readonly authService: Auth,
+  private readonly changeDetector: ChangeDetectorRef,
+  private readonly router: Router,
+) {}
 
   cadastrar(formulario: NgForm): void {
     this.mensagemSucesso = '';
@@ -72,6 +74,7 @@ export class Register {
         this.role = 'USER';
 
         this.changeDetector.detectChanges();
+        this.router.navigate(['/login']);
       },
 
       error: (error: HttpErrorResponse) => {
