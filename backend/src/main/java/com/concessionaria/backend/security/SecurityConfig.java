@@ -41,6 +41,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                
+                // Proteção dos endpoints de veículos por JWT + Role da 3ª Iteração
+                .requestMatchers(HttpMethod.POST, "/api/veiculos").hasRole("FUNCIONARIO")
+                .requestMatchers(HttpMethod.GET, "/api/veiculos").hasRole("FUNCIONARIO")
+                
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -56,7 +61,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*")); // Libera chamadas de qualquer porta/origem
+        configuration.setAllowedOriginPatterns(List.of("*")); // Libera chamadas de qualquer porta ou origem
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setAllowCredentials(true);
