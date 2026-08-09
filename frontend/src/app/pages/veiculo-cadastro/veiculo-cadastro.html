@@ -1,8 +1,16 @@
-<div class="veiculo-page">
+<app-navbar></app-navbar>
+
+<main class="veiculo-page">
   <section class="veiculo-card">
+
     <header class="veiculo-header">
+      <span class="page-label">CADASTRO DE VEÍCULO</span>
+
       <h1>Cadastrar veículo</h1>
-      <p>Preencha os dados do veículo</p>
+
+      <p>
+        Preencha os dados abaixo para adicionar um novo veículo ao sistema.
+      </p>
     </header>
 
     <form
@@ -13,6 +21,7 @@
     >
       <div class="form-group">
         <label for="marca">Marca</label>
+
         <input
           id="marca"
           type="text"
@@ -26,6 +35,7 @@
 
       <div class="form-group">
         <label for="modelo">Modelo</label>
+
         <input
           id="modelo"
           type="text"
@@ -39,6 +49,7 @@
 
       <div class="form-group">
         <label for="ano">Ano</label>
+
         <input
           id="ano"
           type="number"
@@ -52,6 +63,7 @@
 
       <div class="form-group">
         <label for="cor">Cor</label>
+
         <input
           id="cor"
           type="text"
@@ -64,6 +76,7 @@
 
       <div class="form-group">
         <label for="quilometragem">Quilometragem</label>
+
         <input
           id="quilometragem"
           type="number"
@@ -77,6 +90,7 @@
 
       <div class="form-group">
         <label for="preco">Preço</label>
+
         <input
           id="preco"
           type="number"
@@ -122,5 +136,6 @@
         {{ enviando ? 'Cadastrando...' : 'Cadastrar veículo' }}
       </button>
     </form>
+
   </section>
-</div>
+</main>

@@ -1,8 +1,16 @@
-<div class="veiculo-page">
+<app-navbar></app-navbar>
+
+<main class="veiculo-page">
   <section class="veiculo-card">
+
     <header class="veiculo-header">
+      <span class="page-label">CONSULTA DE VEÍCULOS</span>
+
       <h1>Veículos cadastrados</h1>
-      <p>Consulte os veículos disponíveis no sistema</p>
+
+      <p>
+        Consulte os veículos disponíveis no sistema.
+      </p>
     </header>
 
     <p
@@ -43,26 +51,35 @@
         *ngFor="let veiculo of veiculos"
       >
         <div class="veiculo-info">
+
           <h2>
             {{ veiculo.marca }} {{ veiculo.modelo }}
           </h2>
 
-          <p>
-            <strong>Ano:</strong>
-            {{ veiculo.ano }}
-          </p>
+          <div class="veiculo-detalhes">
 
-          <p>
-            <strong>Preço:</strong>
-            {{ veiculo.preco | currency:'BRL' }}
-          </p>
+            <p>
+              <strong>Ano</strong>
+              <span>{{ veiculo.ano }}</span>
+            </p>
 
-          <p>
-            <strong>Status:</strong>
-            {{ veiculo.status }}
-          </p>
+            <p>
+              <strong>Preço</strong>
+              <span>{{ veiculo.preco | currency:'BRL' }}</span>
+            </p>
+
+            <p>
+              <strong>Status</strong>
+              <span class="status">
+                {{ veiculo.status }}
+              </span>
+            </p>
+
+          </div>
+
         </div>
       </article>
     </div>
+
   </section>
-</div>
+</main>

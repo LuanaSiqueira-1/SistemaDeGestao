@@ -1,9 +1,67 @@
-<section class="dashboard-page">
-  <div class="dashboard-card">
-    <h1>Área protegida</h1>
+<div class="dashboard-page">
 
-    <p>
-      Esta página só pode ser acessada por usuários autenticados.
-    </p>
-  </div>
-</section>
+  <app-navbar></app-navbar>
+
+  <main class="dashboard-content">
+
+    <section class="welcome">
+      <span class="welcome-label">PAINEL PRINCIPAL</span>
+
+      <h1>Olá, {{ nome }}!</h1>
+
+      <p>
+        Gerencie os veículos da concessionária de forma simples e organizada.
+      </p>
+    </section>
+
+    <section class="actions">
+
+      <a routerLink="/veiculos/cadastro" class="action-card">
+        <div class="card-icon">+</div>
+
+        <div class="card-content">
+          <h2>Cadastrar veículo</h2>
+
+          <p>
+            Adicione um novo veículo ao sistema informando seus dados.
+          </p>
+
+          <span class="card-link">
+            Novo cadastro →
+          </span>
+        </div>
+      </a>
+
+      <a routerLink="/veiculos" class="action-card">
+        <div class="card-icon">☰</div>
+
+        <div class="card-content">
+          <h2>Consultar veículos</h2>
+
+          <p>
+            Visualize os veículos que já estão cadastrados no sistema.
+          </p>
+
+          <span class="card-link">
+            Ver veículos →
+          </span>
+        </div>
+      </a>
+
+    </section>
+
+    <section class="security-info">
+      <span class="security-icon">✓</span>
+
+      <div>
+        <strong>Área protegida</strong>
+
+        <p>
+          Esta área está disponível apenas para usuários autenticados.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+</div>

@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
+import { Navbar } from '../../components/navbar/navbar';
 import {
   StatusVeiculo,
   VeiculoCadastroRequest,
@@ -14,7 +15,7 @@ import { VeiculoService } from '../../core/services/veiculo';
 
 @Component({
   selector: 'app-veiculo-cadastro',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Navbar],
   templateUrl: './veiculo-cadastro.html',
   styleUrl: './veiculo-cadastro.css',
 })
