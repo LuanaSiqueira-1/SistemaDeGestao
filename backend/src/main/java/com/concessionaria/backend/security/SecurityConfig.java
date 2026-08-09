@@ -42,9 +42,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 
-                // Proteção dos endpoints de veículos por JWT + Role da 3ª Iteração
-                .requestMatchers(HttpMethod.POST, "/api/veiculos").hasRole("FUNCIONARIO")
-                .requestMatchers(HttpMethod.GET, "/api/veiculos").hasRole("FUNCIONARIO")
+                // As histórias da 3ª iteração exigem funcionário autenticado, sem Role específica.
+                .requestMatchers(HttpMethod.POST, "/api/veiculos").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/veiculos").authenticated()
                 
                 .anyRequest().authenticated()
             )
