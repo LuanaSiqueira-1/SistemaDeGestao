@@ -88,6 +88,13 @@ class VeiculoSecurityIntegrationTest {
                 .andExpect(jsonPath("$.status").value("DISPONIVEL"));
     }
 
+    @Test
+    void deveBloquearRequisicaoComTokenInvalido() throws Exception {
+        mockMvc.perform(get("/api/veiculos")
+                        .header("Authorization", "Bearer token-invalido"))
+                .andExpect(status().isUnauthorized());
+    }
+
     private String jsonVeiculoValido() {
         return """
                 {
