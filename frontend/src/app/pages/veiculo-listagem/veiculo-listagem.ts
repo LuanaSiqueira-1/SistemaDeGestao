@@ -6,12 +6,13 @@ import {
   OnInit,
 } from '@angular/core';
 
+import { Navbar } from '../../components/navbar/navbar';
 import { VeiculoListagemResponse } from '../../core/models/veiculo';
 import { VeiculoService } from '../../core/services/veiculo';
 
 @Component({
   selector: 'app-veiculo-listagem',
-  imports: [CommonModule],
+  imports: [CommonModule, Navbar],
   templateUrl: './veiculo-listagem.html',
   styleUrl: './veiculo-listagem.css',
 })
