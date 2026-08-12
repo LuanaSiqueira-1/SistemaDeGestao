@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -93,6 +94,73 @@ class VeiculoSecurityIntegrationTest {
         mockMvc.perform(get("/api/veiculos")
                         .header("Authorization", "Bearer token-invalido"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void devePermitirConsultaComTokenDeAdmin() throws Exception {
+        String emailAdmin =
+                "admin." + UUID.randomUUID() + "@ufape.edu.br";
+
+        User administrador = new User(
+                null,
+                "Administrador",
+                emailAdmin,
+                passwordEncoder.encode("senhaAdmin"),
+                Role.ADMIN
+        );
+
+        User adminSalvo =
+                userRepository.saveAndFlush(administrador);
+
+        String tokenAdmin =
+                jwtService.generateToken(adminSalvo);
+
+        mockMvc.perform(get("/api/veiculos")
+                        .header(
+                                "Authorization",
+                                "Bearer " + tokenAdmin
+                        ))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deveBloquearUsuarioComRoleIncorreta() throws Exception {
+        mockMvc.perform(get("/api/admin/dashboard")
+                        .header(
+                                "Authorization",
+                                "Bearer " + tokenValido
+                        ))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void devePermitirAdminNaAreaAdministrativa() throws Exception {
+        String emailAdmin =
+                "admin.dashboard." + UUID.randomUUID() + "@ufape.edu.br";
+
+        User administrador = new User(
+                null,
+                "Administrador",
+                emailAdmin,
+                passwordEncoder.encode("senhaAdmin"),
+                Role.ADMIN
+        );
+
+        User adminSalvo =
+                userRepository.saveAndFlush(administrador);
+
+        String tokenAdmin =
+                jwtService.generateToken(adminSalvo);
+
+        mockMvc.perform(get("/api/admin/dashboard")
+                        .header(
+                                "Authorization",
+                                "Bearer " + tokenAdmin
+                        ))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        "Acesso autorizado! Você está na área administrativa."
+                ));
     }
 
     private String jsonVeiculoValido() {
