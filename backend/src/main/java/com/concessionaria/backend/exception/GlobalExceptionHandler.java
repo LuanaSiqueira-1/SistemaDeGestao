@@ -1,8 +1,10 @@
 package com.concessionaria.backend.exception;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.concessionaria.backend.dto.ErroResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,40 +15,69 @@ import org.springframework.http.HttpStatus;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(
+    public ResponseEntity<ErroResponse> handleValidationErrors(
             MethodArgumentNotValidException exception
     ) {
-        Map<String, String> errors = new LinkedHashMap<>();
+        Map<String, String> campos = new LinkedHashMap<>();
 
         exception.getBindingResult()
                 .getFieldErrors()
-                .forEach(error -> errors.put(
+                .forEach(error -> campos.put(
                         error.getField(),
                         error.getDefaultMessage()
                 ));
 
-        return ResponseEntity.badRequest().body(errors);
+        ErroResponse resposta = new ErroResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Dados inválidos",
+                "Um ou mais campos estão inválidos.",
+                campos,
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.badRequest().body(resposta);
     }
+
+    @ExceptionHandler({
+            ClienteNaoEncontradoException.class,
+            VendaNaoEncontradaException.class
+    })
+    public ResponseEntity<ErroResponse> handleRecursoNaoEncontrado(
+            RuntimeException exception
+    ) {
+        return criarResposta(
+                HttpStatus.NOT_FOUND,
+                "Recurso não encontrado",
+                exception.getMessage()
+        );
+    }
+
     @ExceptionHandler(EmailJaCadastradoException.class)
-    public ResponseEntity<Map<String, String>> handleEmailJaCadastrado(
+    public ResponseEntity<ErroResponse> handleConflito(
             EmailJaCadastradoException exception
     ) {
-        Map<String, String> error = new LinkedHashMap<>();
-        error.put("erro", exception.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(error);
+        return criarResposta(
+                HttpStatus.CONFLICT,
+                "Conflito",
+                exception.getMessage()
+        );
     }
-    @ExceptionHandler(ClienteNaoEncontradoException.class)
-    public ResponseEntity<Map<String, String>> handleClienteNaoEncontrado(
-            ClienteNaoEncontradoException exception
+
+    private ResponseEntity<ErroResponse> criarResposta(
+            HttpStatus status,
+            String erro,
+            String mensagem
     ) {
-        Map<String, String> error = new LinkedHashMap<>();
-        error.put("erro", exception.getMessage());
+        ErroResponse resposta = new ErroResponse(
+                status.value(),
+                erro,
+                mensagem,
+                Map.of(),
+                LocalDateTime.now()
+        );
 
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(error);
+                .status(status)
+                .body(resposta);
     }
 }

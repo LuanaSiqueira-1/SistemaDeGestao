@@ -80,21 +80,30 @@ class VeiculoControllerTest {
         mockMvc.perform(post("/api/veiculos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {
-                                  "marca": "",
-                                  "modelo": "",
-                                  "ano": 2024,
-                                  "quilometragem": -1,
-                                  "preco": 0,
-                                  "status": null
-                                }
-                                """))
+                            {
+                              "marca": "",
+                              "modelo": "",
+                              "ano": 2024,
+                              "quilometragem": -1,
+                              "preco": 0,
+                              "status": null
+                            }
+                            """))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.marca").value("A marca é obrigatória"))
-                .andExpect(jsonPath("$.modelo").value("O modelo é obrigatório"))
-                .andExpect(jsonPath("$.quilometragem").value("A quilometragem não pode ser negativa"))
-                .andExpect(jsonPath("$.preco").value("O preço deve ser maior que zero"))
-                .andExpect(jsonPath("$.status").value("O status é obrigatório"));
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.erro").value("Dados inválidos"))
+                .andExpect(jsonPath("$.mensagem")
+                        .value("Um ou mais campos estão inválidos."))
+                .andExpect(jsonPath("$.campos.marca")
+                        .value("A marca é obrigatória"))
+                .andExpect(jsonPath("$.campos.modelo")
+                        .value("O modelo é obrigatório"))
+                .andExpect(jsonPath("$.campos.quilometragem")
+                        .value("A quilometragem não pode ser negativa"))
+                .andExpect(jsonPath("$.campos.preco")
+                        .value("O preço deve ser maior que zero"))
+                .andExpect(jsonPath("$.campos.status")
+                        .value("O status é obrigatório"));
 
         verify(veiculoService, never()).cadastrar(any());
     }
