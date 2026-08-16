@@ -131,15 +131,15 @@ class VendaServiceTest {
                 .isEqualByComparingTo("85000.00");
     }
 
-    @Test
-    void deveLancarExcecaoQuandoVendaNaoExistir() {
-        when(vendaRepository.findById(99L))
-                .thenReturn(Optional.empty());
+  @Test
+        void deveLancarExcecaoQuandoVendaNaoExistir() {
+    when(vendaRepository.findById(99L))
+            .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> vendaService.buscarPorId(99L))
-                .isInstanceOf(VendaNaoEncontradaException.class)
-                .hasMessage("Venda não encontrada com o ID: 99");
-    }
+    assertThatThrownBy(() -> vendaService.buscarPorId(99L))
+            .isInstanceOf(VendaNaoEncontradaException.class)
+            .hasMessage("Venda não encontrada com o ID: 99"); 
+}
 
     private Cliente criarCliente() {
         Cliente cliente = new Cliente();
@@ -158,7 +158,7 @@ class VendaServiceTest {
         veiculo.setModelo("Corolla");
         veiculo.setAno(2024);
         veiculo.setPreco(new BigDecimal("90000.00"));
-        veiculo.setStatus(StatusVeiculo.VENDIDO);
+        veiculo.setStatus(StatusVeiculo.DISPONIVEL);
         return veiculo;
     }
 
