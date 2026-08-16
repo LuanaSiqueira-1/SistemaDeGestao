@@ -8,7 +8,7 @@ import com.concessionaria.backend.repository.ClienteRepository;
 import com.concessionaria.backend.repository.VeiculoRepository;
 import com.concessionaria.backend.repository.VendaRepository;
 import com.concessionaria.backend.exception.ClienteNaoEncontradoException;
-
+import com.concessionaria.backend.exception.VendaNaoEncontradaException; // ◄ IMPORTADO AQUI!
 
 // Imports exatos dos DTOs do projeto
 import com.concessionaria.backend.dto.VendaRequestDTO;
@@ -65,15 +65,16 @@ public class VendaService {
         return new VendaResponseDTO(vendaSalva);
     }
 
-          @Transactional(readOnly = true)
-          public VendaDetalheResponse buscarPorId(Long id) {
+    @Transactional(readOnly = true)
+    public VendaDetalheResponse buscarPorId(Long id) {
 
-        // Trocamos a VendaNaoEncontradaException por RuntimeException
-        Venda venda = vendaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Venda com ID " + id + " não encontrada."));
+        // CORRIGIDO: Agora lançando a exceção que o JUnit espera, sem quebrar seus DTOs!
+     Venda venda = vendaRepository.findById(id)
+        .orElseThrow(() -> new VendaNaoEncontradaException(id));
         
         Cliente cliente = venda.getCliente();
         Veiculo veiculo = venda.getVeiculo();
+        
         // Passando os atributos soltos exatamente na ordem exigida por ClienteDetalheResponse
         ClienteDetalheResponse clienteDTO = new ClienteDetalheResponse(
                 cliente.getId(),
@@ -83,7 +84,7 @@ public class VendaService {
                 cliente.getEmail()
         );
         
-        // CORRIGIDO: Passando os atributos soltos exatamente na ordem exigida por VeiculoResponse
+        // Passando os atributos soltos exatamente na ordem exigida por VeiculoResponse
         VeiculoResponse veiculoDTO = new VeiculoResponse(
                 veiculo.getId(),
                 veiculo.getMarca(),
@@ -117,7 +118,7 @@ public class VendaService {
                     c.getCpf()
             );
             
-            // CORRIGIDO: Passando os atributos soltos exatamente na ordem exigida por VeiculoListagemResponse
+            // Passando os atributos soltos exatamente na ordem exigida por VeiculoListagemResponse
             VeiculoListagemResponse veiculoDTO = new VeiculoListagemResponse(
                     v.getId(),
                     v.getMarca(),
