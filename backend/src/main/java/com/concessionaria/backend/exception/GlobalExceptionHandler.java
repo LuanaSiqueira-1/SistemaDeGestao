@@ -49,4 +49,15 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(error);
     }
+    @ExceptionHandler(VendaNaoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handleVendaNaoEncontrada(
+            VendaNaoEncontradaException exception
+    ) {
+        Map<String, String> error = new LinkedHashMap<>();
+        error.put("erro", exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
+    }
 }
