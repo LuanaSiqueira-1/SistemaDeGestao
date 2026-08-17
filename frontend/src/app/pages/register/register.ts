@@ -13,6 +13,11 @@ import {
   Role,
 } from '../../core/services/auth';
 
+interface ErroApi {
+  mensagem?: string;
+  campos?: Record<string, string>;
+}
+
 @Component({
   selector: 'app-register',
   imports: [CommonModule, FormsModule],
@@ -29,11 +34,11 @@ export class Register {
   mensagemErro = '';
   enviando = false;
 
-constructor(
-  private readonly authService: Auth,
-  private readonly changeDetector: ChangeDetectorRef,
-  private readonly router: Router,
-) {}
+  constructor(
+    private readonly authService: Auth,
+    private readonly changeDetector: ChangeDetectorRef,
+    private readonly router: Router,
+  ) {}
 
   cadastrar(formulario: NgForm): void {
     this.mensagemSucesso = '';
@@ -41,7 +46,8 @@ constructor(
 
     if (formulario.invalid) {
       formulario.control.markAllAsTouched();
-      this.mensagemErro = 'Preencha todos os campos corretamente.';
+      this.mensagemErro =
+        'Preencha todos os campos corretamente.';
       return;
     }
 
@@ -74,17 +80,28 @@ constructor(
         this.role = 'USER';
 
         this.changeDetector.detectChanges();
+
         this.router.navigate(['/login']);
       },
 
       error: (error: HttpErrorResponse) => {
         this.enviando = false;
 
-        if (error.status === 409) {
+        if (error.status === 400) {
           this.mensagemErro =
-            error.error?.erro ?? 'E-mail já cadastrado.';
+            this.obterMensagemErro(error);
+        } else if (error.status === 409) {
+          this.mensagemErro =
+            this.obterMensagemErro(
+              error,
+              'E-mail já cadastrado.',
+            );
+        } else if (error.status === 0) {
+          this.mensagemErro =
+            'Não foi possível conectar ao servidor.';
         } else {
-          this.mensagemErro = this.obterMensagemErro(error);
+          this.mensagemErro =
+            'Não foi possível realizar o cadastro.';
         }
 
         this.changeDetector.detectChanges();
@@ -92,26 +109,40 @@ constructor(
     });
   }
 
-  private obterMensagemErro(error: HttpErrorResponse): string {
-    if (error.status === 0) {
-      return 'Não foi possível conectar ao servidor.';
+  private obterMensagemErro(
+    error: HttpErrorResponse,
+    mensagemPadrao = 'Verifique os dados informados.',
+  ): string {
+    const resposta = error.error as ErroApi | string | null;
+
+    if (!resposta) {
+      return mensagemPadrao;
     }
 
-    if (error.status === 400 && error.error) {
-      if (typeof error.error === 'string') {
-        return error.error;
-      }
+    if (typeof resposta === 'string') {
+      return resposta;
+    }
 
-      const mensagens = Object.values(error.error)
+    if (resposta.campos) {
+      const mensagens = Object.values(resposta.campos)
         .filter(
           (mensagem): mensagem is string =>
             typeof mensagem === 'string',
         )
         .join(' ');
 
-      return mensagens || 'Verifique os dados informados.';
+      if (mensagens) {
+        return mensagens;
+      }
     }
 
-    return 'Não foi possível realizar o cadastro.';
+    if (
+      typeof resposta.mensagem === 'string' &&
+      resposta.mensagem.trim()
+    ) {
+      return resposta.mensagem;
+    }
+
+    return mensagemPadrao;
   }
 }
