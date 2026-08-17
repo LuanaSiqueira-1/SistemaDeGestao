@@ -12,6 +12,7 @@ import { Register } from './pages/register/register';
 import { VeiculoCadastro } from './pages/veiculo-cadastro/veiculo-cadastro';
 import { VeiculoListagem } from './pages/veiculo-listagem/veiculo-listagem';
 import { VendaCadastro } from './pages/venda-cadastro/venda-cadastro';
+import { VendaDetalhe } from './pages/venda-detalhe/venda-detalhe';
 import { VendaListagem } from './pages/venda-listagem/venda-listagem';
 
 export const routes: Routes = [
@@ -56,6 +57,11 @@ export const routes: Routes = [
   {
     path: 'vendas/cadastro',
     component: VendaCadastro,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vendas/:id',
+    component: VendaDetalhe,
     canActivate: [authGuard],
   },
   {

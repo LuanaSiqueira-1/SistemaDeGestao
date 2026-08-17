@@ -1,0 +1,149 @@
+<app-navbar></app-navbar>
+
+<main class="venda-page">
+  <section class="venda-card">
+
+    <header class="venda-header">
+      <span class="page-label">DETALHE DA VENDA</span>
+
+      <h1>Dados da venda</h1>
+
+      <p>
+        Consulte as informações completas da venda selecionada.
+      </p>
+    </header>
+
+    <p
+      class="loading-message"
+      *ngIf="carregando"
+    >
+      Carregando venda...
+    </p>
+
+    <p
+      class="error-message"
+      *ngIf="mensagemErro"
+    >
+      {{ mensagemErro }}
+    </p>
+
+    <article
+      class="venda-detalhe"
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        venda
+      "
+    >
+      <div class="venda-titulo">
+        <div>
+          <span class="venda-id">
+            Venda #{{ venda.id }}
+          </span>
+
+          <h2>
+            {{ venda.veiculo.marca }}
+            {{ venda.veiculo.modelo }}
+          </h2>
+        </div>
+
+        <span class="venda-valor">
+          {{ venda.valor | currency:'BRL' }}
+        </span>
+      </div>
+
+      <section class="detalhe-secao">
+        <h3>Informações da venda</h3>
+
+        <div class="dados-grid">
+          <div class="dado-item">
+            <strong>Data da venda</strong>
+
+            <span>
+              {{ venda.dataVenda | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+          <div class="dado-item">
+            <strong>Valor da venda</strong>
+
+            <span>
+              {{ venda.valor | currency:'BRL' }}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section class="detalhe-secao">
+        <h3>Cliente</h3>
+
+        <div class="dados-grid">
+          <div class="dado-item">
+            <strong>Nome</strong>
+            <span>{{ venda.cliente.nome }}</span>
+          </div>
+
+          <div class="dado-item">
+            <strong>CPF</strong>
+            <span>{{ venda.cliente.cpf }}</span>
+          </div>
+
+          <div class="dado-item">
+            <strong>Telefone</strong>
+            <span>{{ venda.cliente.telefone }}</span>
+          </div>
+
+          <div class="dado-item">
+            <strong>E-mail</strong>
+            <span>{{ venda.cliente.email }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="detalhe-secao">
+        <h3>Veículo</h3>
+
+        <div class="dados-grid">
+          <div class="dado-item">
+            <strong>Marca</strong>
+            <span>{{ venda.veiculo.marca }}</span>
+          </div>
+
+          <div class="dado-item">
+            <strong>Modelo</strong>
+            <span>{{ venda.veiculo.modelo }}</span>
+          </div>
+
+          <div class="dado-item">
+            <strong>Ano</strong>
+            <span>{{ venda.veiculo.ano }}</span>
+          </div>
+
+          <div class="dado-item">
+            <strong>Preço cadastrado</strong>
+
+            <span>
+              {{ venda.veiculo.preco | currency:'BRL' }}
+            </span>
+          </div>
+
+          <div class="dado-item">
+            <strong>Status</strong>
+
+            <span>
+              {{ formatarStatusVeiculo(venda.veiculo.status) }}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <a
+        class="back-link"
+        routerLink="/vendas"
+      >
+        Voltar para vendas
+      </a>
+    </article>
+
+  </section>
+</main>

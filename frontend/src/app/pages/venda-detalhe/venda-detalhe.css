@@ -1,0 +1,191 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.venda-page {
+  min-height: calc(100vh - 76px);
+  padding: 48px 20px 60px;
+  background: #f5f7fa;
+  box-sizing: border-box;
+}
+
+.venda-card {
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.venda-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.page-label {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #4f46e5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.venda-header h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.venda-header p {
+  margin: 10px 0 0;
+  color: #6b7280;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.venda-detalhe {
+  padding: 30px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.venda-titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.venda-id {
+  display: block;
+  margin-bottom: 6px;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.venda-titulo h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.venda-valor {
+  color: #166534;
+  font-size: 22px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.detalhe-secao {
+  padding: 24px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detalhe-secao h3 {
+  margin: 0 0 18px;
+  color: #111827;
+  font-size: 18px;
+}
+
+.dados-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.dado-item {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.dado-item strong {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dado-item span {
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 24px;
+  color: #4f46e5;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #4338ca;
+  text-decoration: underline;
+}
+
+.loading-message,
+.error-message {
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.loading-message {
+  background: #ffffff;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+@media (max-width: 850px) {
+  .venda-page {
+    padding-top: 38px;
+  }
+
+  .venda-header h1 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 520px) {
+  .venda-page {
+    padding: 30px 16px 45px;
+  }
+
+  .venda-header h1 {
+    font-size: 27px;
+  }
+
+  .venda-detalhe {
+    padding: 22px;
+  }
+
+  .venda-titulo {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dados-grid {
+    grid-template-columns: 1fr;
+  }
+}
