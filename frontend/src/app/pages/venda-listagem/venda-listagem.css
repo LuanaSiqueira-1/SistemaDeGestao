@@ -231,6 +231,20 @@
   font-weight: 500;
 }
 
+.detail-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: #4f46e5;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.detail-link:hover {
+  color: #4338ca;
+  text-decoration: underline;
+}
+
 .loading-message,
 .empty-message,
 .error-message {

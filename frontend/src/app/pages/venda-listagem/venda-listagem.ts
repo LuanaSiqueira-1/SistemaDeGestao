@@ -6,6 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { Navbar } from '../../components/navbar/navbar';
 import { VendaListagemResponse } from '../../core/models/venda';
@@ -13,7 +14,12 @@ import { VendaService } from '../../core/services/venda';
 
 @Component({
   selector: 'app-venda-listagem',
-  imports: [CommonModule, FormsModule, Navbar],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    Navbar,
+  ],
   templateUrl: './venda-listagem.html',
   styleUrl: './venda-listagem.css',
 })
