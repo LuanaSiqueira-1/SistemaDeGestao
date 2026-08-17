@@ -11,6 +11,7 @@ import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { VeiculoCadastro } from './pages/veiculo-cadastro/veiculo-cadastro';
 import { VeiculoListagem } from './pages/veiculo-listagem/veiculo-listagem';
+import { VendaCadastro } from './pages/venda-cadastro/venda-cadastro';
 
 export const routes: Routes = [
   {
@@ -49,6 +50,11 @@ export const routes: Routes = [
   {
     path: 'clientes/:id',
     component: ClienteDetalhe,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vendas/cadastro',
+    component: VendaCadastro,
     canActivate: [authGuard],
   },
   {

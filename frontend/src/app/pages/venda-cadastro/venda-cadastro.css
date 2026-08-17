@@ -1,0 +1,233 @@
+:host {
+  display: block;
+
+  min-height: 100vh;
+}
+
+.venda-page {
+  min-height: calc(100vh - 76px);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 48px 20px 60px;
+
+  background: #f5f7fa;
+
+  box-sizing: border-box;
+}
+
+.venda-card {
+  width: 100%;
+  max-width: 650px;
+}
+
+.venda-header {
+  margin-bottom: 28px;
+
+  text-align: center;
+}
+
+.page-label {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  color: #4f46e5;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.venda-header h1 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.venda-header p {
+  margin: 10px 0 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.venda-form {
+  padding: 34px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+
+  color: #1f2937;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  height: 50px;
+
+  padding: 0 14px;
+
+  background: #ffffff;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+
+  box-sizing: border-box;
+
+  color: #1f2937;
+
+  font-size: 15px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+
+  border-color: #4f46e5;
+
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.form-group input:disabled,
+.form-group select:disabled {
+  background: #f8fafc;
+
+  cursor: not-allowed;
+}
+
+.field-error {
+  margin-top: 6px;
+
+  color: #b91c1c;
+
+  font-size: 13px;
+}
+
+.field-warning {
+  margin-top: 6px;
+
+  color: #92400e;
+
+  font-size: 13px;
+}
+
+.submit-button {
+  width: 100%;
+  height: 52px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #4f46e5;
+  color: #ffffff;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #4338ca;
+
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+
+  cursor: not-allowed;
+}
+
+.loading-message,
+.success-message,
+.error-message {
+  padding: 16px;
+
+  border-radius: 10px;
+
+  text-align: center;
+
+  font-size: 14px;
+}
+
+.loading-message {
+  background: #ffffff;
+  color: #6b7280;
+
+  border: 1px solid #e5e7eb;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.success-message {
+  margin: 0 0 16px;
+
+  background: #dcfce7;
+  color: #166534;
+}
+
+.error-message {
+  margin: 0 0 16px;
+
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+@media (max-width: 850px) {
+  .venda-page {
+    padding-top: 38px;
+  }
+
+  .venda-header h1 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 520px) {
+  .venda-page {
+    padding: 30px 16px 45px;
+  }
+
+  .venda-header h1 {
+    font-size: 27px;
+  }
+
+  .venda-form {
+    padding: 24px 20px;
+  }
+}
