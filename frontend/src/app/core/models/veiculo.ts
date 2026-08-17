@@ -23,3 +23,12 @@ export interface VeiculoListagemResponse {
   preco: number;
   status: StatusVeiculo;
 }
+
+export interface VeiculoResponse {
+  id: number;
+  marca: string;
+  modelo: string;
+  ano: number;
+  preco: number;
+  status: StatusVeiculo;
+}
