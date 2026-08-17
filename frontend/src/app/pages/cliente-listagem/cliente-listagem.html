@@ -1,0 +1,158 @@
+<app-navbar></app-navbar>
+
+<main class="cliente-page">
+  <section class="cliente-card">
+
+    <header class="cliente-header">
+      <span class="page-label">CONSULTA DE CLIENTES</span>
+
+      <h1>Clientes cadastrados</h1>
+
+      <p>
+        Consulte os clientes por nome ou CPF.
+      </p>
+    </header>
+
+    <form
+      class="filtros"
+      (ngSubmit)="pesquisar()"
+      autocomplete="off"
+    >
+      <div class="filtros-campos">
+        <div class="form-group">
+          <label for="nome">Nome</label>
+
+          <input
+            id="nome"
+            type="text"
+            name="nome"
+            [(ngModel)]="nome"
+            placeholder="Ex.: Maria da Silva"
+            [disabled]="carregando"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="cpf">CPF</label>
+
+          <input
+            id="cpf"
+            type="text"
+            name="cpf"
+            [(ngModel)]="cpf"
+            placeholder="Ex.: 12345678901"
+            inputmode="numeric"
+            [disabled]="carregando"
+          />
+        </div>
+      </div>
+
+      <div class="filtros-acoes">
+        <button
+          class="search-button"
+          type="submit"
+          [disabled]="carregando"
+        >
+          Pesquisar
+        </button>
+
+        <button
+          class="clear-button"
+          type="button"
+          (click)="limparPesquisa()"
+          [disabled]="carregando"
+        >
+          Limpar
+        </button>
+      </div>
+    </form>
+
+    <p
+      class="loading-message"
+      *ngIf="carregando"
+    >
+      Carregando clientes...
+    </p>
+
+    <p
+      class="error-message"
+      *ngIf="mensagemErro"
+    >
+      {{ mensagemErro }}
+    </p>
+
+    <div
+      class="empty-message"
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        clientes.length === 0
+      "
+    >
+      Nenhum cliente encontrado.
+    </div>
+
+    <div
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        clientes.length > 0
+      "
+    >
+      <div class="resultado-resumo">
+        {{ totalElementos }}
+        {{ totalElementos === 1 ? 'cliente encontrado' : 'clientes encontrados' }}
+      </div>
+
+      <div class="clientes-lista">
+        <article
+          class="cliente-item"
+          *ngFor="let cliente of clientes"
+        >
+          <div class="cliente-info">
+            <h2>{{ cliente.nome }}</h2>
+
+            <div class="cliente-detalhes">
+              <p>
+                <strong>CPF</strong>
+                <span>{{ cliente.cpf }}</span>
+              </p>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <nav
+        class="paginacao"
+        *ngIf="totalPaginas > 1"
+        aria-label="Navegação entre páginas de clientes"
+      >
+        <button
+          type="button"
+          class="pagination-button"
+          (click)="paginaAnterior()"
+          [disabled]="paginaAtual === 0 || carregando"
+        >
+          Anterior
+        </button>
+
+        <span class="pagina-atual">
+          Página {{ paginaAtual + 1 }} de {{ totalPaginas }}
+        </span>
+
+        <button
+          type="button"
+          class="pagination-button"
+          (click)="proximaPagina()"
+          [disabled]="
+            paginaAtual >= totalPaginas - 1 ||
+            carregando
+          "
+        >
+          Próxima
+        </button>
+      </nav>
+    </div>
+
+  </section>
+</main>

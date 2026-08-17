@@ -4,6 +4,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
 import { Admin } from './pages/admin/admin';
 import { ClienteCadastro } from './pages/cliente-cadastro/cliente-cadastro';
+import { ClienteListagem } from './pages/cliente-listagem/cliente-listagem';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
@@ -37,6 +38,11 @@ export const routes: Routes = [
   {
     path: 'clientes/cadastro',
     component: ClienteCadastro,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'clientes',
+    component: ClienteListagem,
     canActivate: [authGuard],
   },
   {
