@@ -118,6 +118,13 @@
                 <span>{{ cliente.cpf }}</span>
               </p>
             </div>
+
+            <a
+              class="detail-link"
+              [routerLink]="['/clientes', cliente.id]"
+            >
+              Ver detalhes
+            </a>
           </div>
         </article>
       </div>

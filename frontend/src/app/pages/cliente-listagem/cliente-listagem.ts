@@ -6,6 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { Navbar } from '../../components/navbar/navbar';
 import { ClienteListagemResponse } from '../../core/models/cliente';
@@ -13,7 +14,7 @@ import { ClienteService } from '../../core/services/cliente';
 
 @Component({
   selector: 'app-cliente-listagem',
-  imports: [CommonModule, FormsModule, Navbar],
+  imports: [CommonModule, FormsModule, RouterLink, Navbar],
   templateUrl: './cliente-listagem.html',
   styleUrl: './cliente-listagem.css',
 })
