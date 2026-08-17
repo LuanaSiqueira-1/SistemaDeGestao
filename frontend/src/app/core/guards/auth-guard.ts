@@ -4,11 +4,13 @@ import {
   Router,
 } from '@angular/router';
 
+import { SessaoService } from '../services/sessao';
+
 export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
-  const token = localStorage.getItem('token');
+  const sessaoService = inject(SessaoService);
 
-  if (token) {
+  if (sessaoService.possuiSessaoValida()) {
     return true;
   }
 

@@ -55,7 +55,10 @@ export class VendaCadastro implements OnInit {
   }
 
   get carregandoDados(): boolean {
-    return this.carregandoClientes || this.carregandoVeiculos;
+    return (
+      this.carregandoClientes ||
+      this.carregandoVeiculos
+    );
   }
 
   registrar(formulario: NgForm): void {
@@ -69,8 +72,10 @@ export class VendaCadastro implements OnInit {
       this.valor === null
     ) {
       formulario.control.markAllAsTouched();
+
       this.mensagemErro =
         'Preencha os campos obrigatórios corretamente.';
+
       return;
     }
 
@@ -94,7 +99,8 @@ export class VendaCadastro implements OnInit {
 
         this.veiculosDisponiveis =
           this.veiculosDisponiveis.filter(
-            (veiculo) => veiculo.id !== veiculoVendidoId,
+            (veiculo) =>
+              veiculo.id !== veiculoVendidoId,
           );
 
         formulario.resetForm({
@@ -116,7 +122,8 @@ export class VendaCadastro implements OnInit {
         this.enviando = false;
 
         if (error.status === 400) {
-          this.mensagemErro = this.obterMensagemErro(error);
+          this.mensagemErro =
+            this.obterMensagemErro(error);
         } else if (error.status === 404) {
           this.mensagemErro =
             'Cliente ou veículo não encontrado.';
@@ -126,6 +133,12 @@ export class VendaCadastro implements OnInit {
         } else if (error.status === 403) {
           this.mensagemErro =
             'Você não possui permissão para registrar vendas.';
+        } else if (error.status === 409) {
+          this.mensagemErro =
+            this.obterMensagemErro(
+              error,
+              'Não foi possível registrar a venda devido a um conflito.',
+            );
         } else if (error.status === 0) {
           this.mensagemErro =
             'Não foi possível conectar ao servidor.';
@@ -158,14 +171,19 @@ export class VendaCadastro implements OnInit {
         }
 
         this.carregandoClientes = false;
+
         this.changeDetector.detectChanges();
       },
 
-      error: () => {
+      error: (error: HttpErrorResponse) => {
         this.clientes = [];
         this.carregandoClientes = false;
+
         this.mensagemErro =
-          'Não foi possível carregar os clientes.';
+          this.obterMensagemErroCarregamento(
+            error,
+            'clientes',
+          );
 
         this.changeDetector.detectChanges();
       },
@@ -178,29 +196,42 @@ export class VendaCadastro implements OnInit {
     this.veiculoService.listar().subscribe({
       next: (response) => {
         this.veiculosDisponiveis = response.filter(
-          (veiculo) => veiculo.status === 'DISPONIVEL',
+          (veiculo) =>
+            veiculo.status === 'DISPONIVEL',
         );
 
         this.carregandoVeiculos = false;
+
         this.changeDetector.detectChanges();
       },
 
-      error: () => {
+      error: (error: HttpErrorResponse) => {
         this.veiculosDisponiveis = [];
         this.carregandoVeiculos = false;
+
         this.mensagemErro =
-          'Não foi possível carregar os veículos.';
+          this.obterMensagemErroCarregamento(
+            error,
+            'veículos',
+          );
 
         this.changeDetector.detectChanges();
       },
     });
   }
 
-  private obterMensagemErro(error: HttpErrorResponse): string {
-    const resposta = error.error as ErroApi | null;
+  private obterMensagemErro(
+    error: HttpErrorResponse,
+    mensagemPadrao = 'Verifique os dados informados.',
+  ): string {
+    const resposta = error.error as ErroApi | string | null;
 
     if (!resposta) {
-      return 'Verifique os dados informados.';
+      return mensagemPadrao;
+    }
+
+    if (typeof resposta === 'string') {
+      return resposta;
     }
 
     if (resposta.campos) {
@@ -223,6 +254,25 @@ export class VendaCadastro implements OnInit {
       return resposta.mensagem;
     }
 
-    return 'Verifique os dados informados.';
+    return mensagemPadrao;
+  }
+
+  private obterMensagemErroCarregamento(
+    error: HttpErrorResponse,
+    recurso: string,
+  ): string {
+    if (error.status === 401) {
+      return 'Sua sessão expirou. Faça login novamente.';
+    }
+
+    if (error.status === 403) {
+      return `Você não possui permissão para consultar ${recurso}.`;
+    }
+
+    if (error.status === 0) {
+      return 'Não foi possível conectar ao servidor.';
+    }
+
+    return `Não foi possível carregar os ${recurso}.`;
   }
 }

@@ -4,19 +4,24 @@ import {
   Router,
 } from '@angular/router';
 
+import { SessaoService } from '../services/sessao';
+
 export const roleGuard: CanActivateFn = (route) => {
   const router = inject(Router);
+  const sessaoService = inject(SessaoService);
 
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
-
-  const rolesPermitidas = route.data['roles'] as string[];
-
-  if (!token) {
+  if (!sessaoService.possuiSessaoValida()) {
     return router.createUrlTree(['/login']);
   }
 
-  if (rolesPermitidas.includes(role ?? '')) {
+  const role = sessaoService.obterRole();
+
+  const rolesPermitidas =
+    route.data['roles'] as string[] | undefined;
+
+  if (
+    rolesPermitidas?.includes(role ?? '')
+  ) {
     return true;
   }
 

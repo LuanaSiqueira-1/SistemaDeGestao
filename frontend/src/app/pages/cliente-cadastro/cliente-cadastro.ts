@@ -42,7 +42,10 @@ export class ClienteCadastro {
 
     if (formulario.invalid) {
       formulario.control.markAllAsTouched();
-      this.mensagemErro = 'Preencha os campos obrigatórios corretamente.';
+
+      this.mensagemErro =
+        'Preencha os campos obrigatórios corretamente.';
+
       return;
     }
 
@@ -59,7 +62,8 @@ export class ClienteCadastro {
       next: () => {
         this.enviando = false;
         this.mensagemErro = '';
-        this.mensagemSucesso = 'Cliente cadastrado com sucesso.';
+        this.mensagemSucesso =
+          'Cliente cadastrado com sucesso.';
 
         formulario.resetForm({
           nome: '',
@@ -80,11 +84,26 @@ export class ClienteCadastro {
         this.enviando = false;
 
         if (error.status === 400) {
-          this.mensagemErro = this.obterMensagemErro(error);
+          this.mensagemErro =
+            this.obterMensagemErro(error);
+        } else if (error.status === 401) {
+          this.mensagemErro =
+            'Sua sessão expirou. Faça login novamente.';
+        } else if (error.status === 403) {
+          this.mensagemErro =
+            'Você não possui permissão para cadastrar clientes.';
+        } else if (error.status === 409) {
+          this.mensagemErro =
+            this.obterMensagemErro(
+              error,
+              'Não foi possível cadastrar o cliente devido a um conflito.',
+            );
         } else if (error.status === 0) {
-          this.mensagemErro = 'Não foi possível conectar ao servidor.';
+          this.mensagemErro =
+            'Não foi possível conectar ao servidor.';
         } else {
-          this.mensagemErro = 'Não foi possível cadastrar o cliente.';
+          this.mensagemErro =
+            'Não foi possível cadastrar o cliente.';
         }
 
         this.changeDetector.detectChanges();
@@ -92,11 +111,18 @@ export class ClienteCadastro {
     });
   }
 
-  private obterMensagemErro(error: HttpErrorResponse): string {
-    const resposta = error.error as ErroApi | null;
+  private obterMensagemErro(
+    error: HttpErrorResponse,
+    mensagemPadrao = 'Verifique os dados informados.',
+  ): string {
+    const resposta = error.error as ErroApi | string | null;
 
     if (!resposta) {
-      return 'Verifique os dados informados.';
+      return mensagemPadrao;
+    }
+
+    if (typeof resposta === 'string') {
+      return resposta;
     }
 
     if (resposta.campos) {
@@ -119,6 +145,6 @@ export class ClienteCadastro {
       return resposta.mensagem;
     }
 
-    return 'Verifique os dados informados.';
+    return mensagemPadrao;
   }
 }
