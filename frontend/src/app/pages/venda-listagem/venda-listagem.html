@@ -1,0 +1,214 @@
+<app-navbar></app-navbar>
+
+<main class="venda-page">
+  <section class="venda-card">
+
+    <header class="venda-header">
+      <span class="page-label">CONSULTA DE VENDAS</span>
+
+      <h1>Vendas registradas</h1>
+
+      <p>
+        Consulte as vendas por cliente ou veículo.
+      </p>
+    </header>
+
+    <form
+      class="filtros"
+      (ngSubmit)="pesquisar()"
+      autocomplete="off"
+    >
+      <div class="filtros-campos">
+
+        <div class="form-group">
+          <label for="cliente">Cliente</label>
+
+          <input
+            id="cliente"
+            type="text"
+            name="cliente"
+            [(ngModel)]="cliente"
+            placeholder="Nome ou CPF do cliente"
+            [disabled]="carregando"
+          />
+
+          <small>
+            Pesquise pelo nome ou CPF.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="veiculo">Veículo</label>
+
+          <input
+            id="veiculo"
+            type="text"
+            name="veiculo"
+            [(ngModel)]="veiculo"
+            placeholder="Marca ou modelo do veículo"
+            [disabled]="carregando"
+          />
+
+          <small>
+            Pesquise pela marca ou modelo.
+          </small>
+        </div>
+
+      </div>
+
+      <div class="filtros-acoes">
+        <button
+          class="search-button"
+          type="submit"
+          [disabled]="carregando"
+        >
+          Pesquisar
+        </button>
+
+        <button
+          class="clear-button"
+          type="button"
+          (click)="limparPesquisa()"
+          [disabled]="carregando"
+        >
+          Limpar
+        </button>
+      </div>
+    </form>
+
+    <p
+      class="loading-message"
+      *ngIf="carregando"
+    >
+      Carregando vendas...
+    </p>
+
+    <p
+      class="error-message"
+      *ngIf="mensagemErro"
+    >
+      {{ mensagemErro }}
+    </p>
+
+    <div
+      class="empty-message"
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        vendas.length === 0
+      "
+    >
+      Nenhuma venda encontrada.
+    </div>
+
+    <div
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        vendas.length > 0
+      "
+    >
+      <div class="resultado-resumo">
+        {{ totalElementos }}
+        {{ totalElementos === 1 ? 'venda encontrada' : 'vendas encontradas' }}
+      </div>
+
+      <div class="vendas-lista">
+
+        <article
+          class="venda-item"
+          *ngFor="let venda of vendas"
+        >
+          <div class="venda-topo">
+            <div>
+              <span class="venda-identificador">
+                Venda #{{ venda.id }}
+              </span>
+
+              <h2>
+                {{ venda.veiculo.marca }}
+                {{ venda.veiculo.modelo }}
+              </h2>
+            </div>
+
+            <span class="venda-valor">
+              {{ venda.valor | currency:'BRL' }}
+            </span>
+          </div>
+
+          <div class="venda-detalhes">
+
+            <p>
+              <strong>Data da venda</strong>
+
+              <span>
+                {{ venda.dataVenda | date:'dd/MM/yyyy' }}
+              </span>
+            </p>
+
+            <p>
+              <strong>Cliente</strong>
+
+              <span>
+                {{ venda.cliente.nome }}
+              </span>
+            </p>
+
+            <p>
+              <strong>CPF</strong>
+
+              <span>
+                {{ venda.cliente.cpf }}
+              </span>
+            </p>
+
+            <p>
+              <strong>Veículo</strong>
+
+              <span>
+                {{ venda.veiculo.marca }}
+                {{ venda.veiculo.modelo }}
+                — {{ venda.veiculo.ano }}
+              </span>
+            </p>
+
+          </div>
+        </article>
+
+      </div>
+
+      <nav
+        class="paginacao"
+        *ngIf="totalPaginas > 1"
+        aria-label="Navegação entre páginas de vendas"
+      >
+        <button
+          type="button"
+          class="pagination-button"
+          (click)="paginaAnterior()"
+          [disabled]="paginaAtual === 0 || carregando"
+        >
+          Anterior
+        </button>
+
+        <span class="pagina-atual">
+          Página {{ paginaAtual + 1 }} de {{ totalPaginas }}
+        </span>
+
+        <button
+          type="button"
+          class="pagination-button"
+          (click)="proximaPagina()"
+          [disabled]="
+            paginaAtual >= totalPaginas - 1 ||
+            carregando
+          "
+        >
+          Próxima
+        </button>
+      </nav>
+
+    </div>
+
+  </section>
+</main>
