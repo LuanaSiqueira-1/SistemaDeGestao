@@ -1,17 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
 import {
   ChangeDetectorRef,
   Component,
 } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
-import {
-  Auth,
-  RegisterRequest,
-  Role,
-} from '../../core/services/auth';
+import { Navbar } from '../../components/navbar/navbar';
+import { ClienteCadastroRequest } from '../../core/models/cliente';
+import { ClienteService } from '../../core/services/cliente';
 
 interface ErroApi {
   mensagem?: string;
@@ -19,25 +16,24 @@ interface ErroApi {
 }
 
 @Component({
-  selector: 'app-register',
-  imports: [CommonModule, FormsModule],
-  templateUrl: './register.html',
-  styleUrl: './register.css',
+  selector: 'app-cliente-cadastro',
+  imports: [CommonModule, FormsModule, Navbar],
+  templateUrl: './cliente-cadastro.html',
+  styleUrl: './cliente-cadastro.css',
 })
-export class Register {
+export class ClienteCadastro {
   nome = '';
+  cpf = '';
+  telefone = '';
   email = '';
-  senha = '';
-  role: Role = 'USER';
 
   mensagemSucesso = '';
   mensagemErro = '';
   enviando = false;
 
   constructor(
-    private readonly authService: Auth,
+    private readonly clienteService: ClienteService,
     private readonly changeDetector: ChangeDetectorRef,
-    private readonly router: Router,
   ) {}
 
   cadastrar(formulario: NgForm): void {
@@ -46,42 +42,42 @@ export class Register {
 
     if (formulario.invalid) {
       formulario.control.markAllAsTouched();
+
       this.mensagemErro =
-        'Preencha todos os campos corretamente.';
+        'Preencha os campos obrigatórios corretamente.';
+
       return;
     }
 
-    const dados: RegisterRequest = {
+    const dados: ClienteCadastroRequest = {
       nome: this.nome.trim(),
+      cpf: this.cpf.trim(),
+      telefone: this.telefone.trim(),
       email: this.email.trim(),
-      senha: this.senha,
-      role: this.role,
     };
 
     this.enviando = true;
 
-    this.authService.register(dados).subscribe({
-      next: (response) => {
+    this.clienteService.cadastrar(dados).subscribe({
+      next: () => {
         this.enviando = false;
-
+        this.mensagemErro = '';
         this.mensagemSucesso =
-          `Usuário ${response.nome} cadastrado com sucesso.`;
+          'Cliente cadastrado com sucesso.';
 
         formulario.resetForm({
           nome: '',
+          cpf: '',
+          telefone: '',
           email: '',
-          senha: '',
-          role: 'USER',
         });
 
         this.nome = '';
+        this.cpf = '';
+        this.telefone = '';
         this.email = '';
-        this.senha = '';
-        this.role = 'USER';
 
         this.changeDetector.detectChanges();
-
-        this.router.navigate(['/login']);
       },
 
       error: (error: HttpErrorResponse) => {
@@ -90,18 +86,24 @@ export class Register {
         if (error.status === 400) {
           this.mensagemErro =
             this.obterMensagemErro(error);
+        } else if (error.status === 401) {
+          this.mensagemErro =
+            'Sua sessão expirou. Faça login novamente.';
+        } else if (error.status === 403) {
+          this.mensagemErro =
+            'Você não possui permissão para cadastrar clientes.';
         } else if (error.status === 409) {
           this.mensagemErro =
             this.obterMensagemErro(
               error,
-              'E-mail já cadastrado.',
+              'Não foi possível cadastrar o cliente devido a um conflito.',
             );
         } else if (error.status === 0) {
           this.mensagemErro =
             'Não foi possível conectar ao servidor.';
         } else {
           this.mensagemErro =
-            'Não foi possível realizar o cadastro.';
+            'Não foi possível cadastrar o cliente.';
         }
 
         this.changeDetector.detectChanges();

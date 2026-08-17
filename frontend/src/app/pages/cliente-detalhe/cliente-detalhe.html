@@ -1,0 +1,65 @@
+<app-navbar></app-navbar>
+
+<main class="cliente-page">
+  <section class="cliente-card">
+
+    <header class="cliente-header">
+      <span class="page-label">DETALHE DO CLIENTE</span>
+
+      <h1>Dados do cliente</h1>
+
+      <p>
+        Consulte as informações completas do cliente selecionado.
+      </p>
+    </header>
+
+    <p
+      class="loading-message"
+      *ngIf="carregando"
+    >
+      Carregando cliente...
+    </p>
+
+    <p
+      class="error-message"
+      *ngIf="mensagemErro"
+    >
+      {{ mensagemErro }}
+    </p>
+
+    <article
+      class="cliente-detalhe"
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        cliente
+      "
+    >
+      <div class="cliente-titulo">
+        <h2>{{ cliente.nome }}</h2>
+
+        <span class="cliente-id">
+          ID {{ cliente.id }}
+        </span>
+      </div>
+
+      <div class="cliente-dados">
+        <div class="dado-item">
+          <strong>CPF</strong>
+          <span>{{ cliente.cpf }}</span>
+        </div>
+
+        <div class="dado-item">
+          <strong>Telefone</strong>
+          <span>{{ cliente.telefone }}</span>
+        </div>
+
+        <div class="dado-item">
+          <strong>E-mail</strong>
+          <span>{{ cliente.email }}</span>
+        </div>
+      </div>
+    </article>
+
+  </section>
+</main>

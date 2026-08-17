@@ -14,6 +14,7 @@ import {
   Auth,
   LoginRequest,
 } from '../../core/services/auth';
+import { SessaoService } from '../../core/services/sessao';
 
 @Component({
   selector: 'app-login',
@@ -28,13 +29,17 @@ export class Login {
   mensagemSucesso = '';
   mensagemErro = '';
   enviando = false;
-  usuarioLogado = this.possuiSessao();
+  usuarioLogado = false;
 
   constructor(
     private readonly authService: Auth,
+    private readonly sessaoService: SessaoService,
     private readonly changeDetector: ChangeDetectorRef,
     private readonly router: Router,
-  ) {}
+  ) {
+    this.usuarioLogado =
+      this.sessaoService.possuiSessaoValida();
+  }
 
   entrar(formulario: NgForm): void {
     this.mensagemSucesso = '';
@@ -42,7 +47,8 @@ export class Login {
 
     if (formulario.invalid) {
       formulario.control.markAllAsTouched();
-      this.mensagemErro = 'Preencha o e-mail e a senha corretamente.';
+      this.mensagemErro =
+        'Preencha o e-mail e a senha corretamente.';
       this.atualizarTela();
       return;
     }
@@ -57,10 +63,12 @@ export class Login {
 
     this.authService.login(dados).subscribe({
       next: (response) => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('role', response.role);
-        localStorage.setItem('nome', response.nome);
-        localStorage.setItem('email', response.email);
+        this.sessaoService.salvarSessao(
+          response.token,
+          response.role,
+          response.nome,
+          response.email,
+        );
 
         this.enviando = false;
         this.usuarioLogado = true;
@@ -86,12 +94,18 @@ export class Login {
         this.usuarioLogado = false;
         this.mensagemSucesso = '';
 
-        if (error.status === 401 || error.status === 403) {
-          this.mensagemErro = 'E-mail ou senha inválidos.';
+        if (
+          error.status === 401 ||
+          error.status === 403
+        ) {
+          this.mensagemErro =
+            'E-mail ou senha inválidos.';
         } else if (error.status === 0) {
-          this.mensagemErro = 'Não foi possível conectar ao servidor.';
+          this.mensagemErro =
+            'Não foi possível conectar ao servidor.';
         } else {
-          this.mensagemErro = 'Não foi possível realizar o login.';
+          this.mensagemErro =
+            'Não foi possível realizar o login.';
         }
 
         this.atualizarTela();
@@ -100,25 +114,19 @@ export class Login {
   }
 
   sair(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('nome');
-    localStorage.removeItem('email');
+    this.sessaoService.limparSessao();
 
     this.enviando = false;
     this.usuarioLogado = false;
     this.email = '';
     this.password = '';
     this.mensagemErro = '';
-    this.mensagemSucesso = 'Sessão encerrada com sucesso.';
+    this.mensagemSucesso =
+      'Sessão encerrada com sucesso.';
 
     this.atualizarTela();
 
     this.router.navigate(['/login']);
-  }
-
-  private possuiSessao(): boolean {
-    return Boolean(localStorage.getItem('token'));
   }
 
   private atualizarTela(): void {

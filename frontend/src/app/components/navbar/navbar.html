@@ -35,6 +35,40 @@
       Consultar veículos
     </a>
 
+    <a
+      routerLink="/clientes/cadastro"
+      routerLinkActive="active"
+      class="nav-link"
+    >
+      Cadastrar cliente
+    </a>
+
+    <a
+      routerLink="/clientes"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-link"
+    >
+      Consultar clientes
+    </a>
+
+    <a
+      routerLink="/vendas/cadastro"
+      routerLinkActive="active"
+      class="nav-link"
+    >
+      Registrar venda
+    </a>
+
+    <a
+      routerLink="/vendas"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-link"
+    >
+      Consultar vendas
+    </a>
+
     <button
       type="button"
       class="logout-button"

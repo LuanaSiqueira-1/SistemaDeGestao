@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
+
+import { SessaoService } from '../../core/services/sessao';
 
 @Component({
   selector: 'app-navbar',
@@ -8,13 +14,13 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-  constructor(private router: Router) {}
+  constructor(
+    private readonly sessaoService: SessaoService,
+    private readonly router: Router,
+  ) {}
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('nome');
-    localStorage.removeItem('email');
+    this.sessaoService.limparSessao();
 
     this.router.navigate(['/login']);
   }
