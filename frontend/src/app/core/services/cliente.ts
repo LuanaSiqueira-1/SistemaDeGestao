@@ -2,6 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+
 import {
   ClienteCadastroRequest,
   ClienteDetalheResponse,
@@ -15,7 +17,7 @@ import { PaginaResponse } from '../models/paginacao';
   providedIn: 'root',
 })
 export class ClienteService {
-  private readonly apiUrl = 'http://localhost:8080/api/clientes';
+  private readonly apiUrl = `${environment.apiUrl}/api/clientes`;
 
   constructor(private readonly http: HttpClient) {}
 

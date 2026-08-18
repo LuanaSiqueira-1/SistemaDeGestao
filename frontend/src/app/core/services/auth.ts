@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+
 export type Role = 'ADMIN' | 'USER';
 
 export interface RegisterRequest {
@@ -34,15 +36,21 @@ export interface AuthResponse {
   providedIn: 'root',
 })
 export class Auth {
-  private readonly apiUrl = 'http://localhost:8080/api/auth';
+  private readonly apiUrl = `${environment.apiUrl}/api/auth`;
 
   constructor(private readonly http: HttpClient) {}
 
   register(data: RegisterRequest): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, data);
+    return this.http.post<RegisterResponse>(
+      `${this.apiUrl}/register`,
+      data,
+    );
   }
 
   login(data: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data);
+    return this.http.post<AuthResponse>(
+      `${this.apiUrl}/login`,
+      data,
+    );
   }
 }

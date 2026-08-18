@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+
 import {
   VeiculoCadastroRequest,
   VeiculoListagemResponse,
@@ -11,11 +13,11 @@ import {
   providedIn: 'root',
 })
 export class VeiculoService {
-  private readonly apiUrl = 'http://localhost:8080/api/veiculos';
+  private readonly apiUrl = `${environment.apiUrl}/api/veiculos`;
 
   constructor(private readonly http: HttpClient) {}
 
-  // Ricardo - envia os dados do veículo para o backend.
+  // Envia os dados do veiculo para o backend.
   cadastrar(
     dados: VeiculoCadastroRequest,
   ): Observable<VeiculoListagemResponse> {
@@ -25,7 +27,7 @@ export class VeiculoService {
     );
   }
 
-  // Ricardo - consulta os veículos cadastrados.
+  // Consulta os veiculos cadastrados.
   listar(): Observable<VeiculoListagemResponse[]> {
     return this.http.get<VeiculoListagemResponse[]>(
       this.apiUrl,
