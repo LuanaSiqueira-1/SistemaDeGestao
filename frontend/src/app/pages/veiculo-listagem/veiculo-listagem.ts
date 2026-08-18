@@ -5,6 +5,7 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { Navbar } from '../../components/navbar/navbar';
 import { VeiculoListagemResponse } from '../../core/models/veiculo';
@@ -12,12 +13,20 @@ import { VeiculoService } from '../../core/services/veiculo';
 
 @Component({
   selector: 'app-veiculo-listagem',
-  imports: [CommonModule, Navbar],
+  imports: [
+    CommonModule,
+    FormsModule,
+    Navbar,
+  ],
   templateUrl: './veiculo-listagem.html',
   styleUrl: './veiculo-listagem.css',
 })
 export class VeiculoListagem implements OnInit {
   veiculos: VeiculoListagemResponse[] = [];
+  veiculosFiltrados: VeiculoListagemResponse[] = [];
+
+  termoPesquisa = '';
+  statusSelecionado = '';
 
   carregando = false;
   mensagemErro = '';
@@ -31,7 +40,6 @@ export class VeiculoListagem implements OnInit {
     this.listarVeiculos();
   }
 
-  // Ricardo - consulta os veículos cadastrados ao abrir a tela.
   listarVeiculos(): void {
     this.carregando = true;
     this.mensagemErro = '';
@@ -39,6 +47,8 @@ export class VeiculoListagem implements OnInit {
     this.veiculoService.listar().subscribe({
       next: (response) => {
         this.veiculos = response;
+        this.veiculosFiltrados = response;
+
         this.carregando = false;
 
         this.changeDetector.detectChanges();
@@ -60,5 +70,39 @@ export class VeiculoListagem implements OnInit {
         this.changeDetector.detectChanges();
       },
     });
+  }
+
+  pesquisar(): void {
+    const termo = this.normalizarTexto(this.termoPesquisa);
+
+    this.veiculosFiltrados = this.veiculos.filter((veiculo) => {
+      const marca = this.normalizarTexto(veiculo.marca);
+      const modelo = this.normalizarTexto(veiculo.modelo);
+
+      const correspondeTermo =
+        !termo ||
+        marca.includes(termo) ||
+        modelo.includes(termo);
+
+      const correspondeStatus =
+        !this.statusSelecionado ||
+        veiculo.status === this.statusSelecionado;
+
+      return correspondeTermo && correspondeStatus;
+    });
+  }
+
+  limparPesquisa(): void {
+    this.termoPesquisa = '';
+    this.statusSelecionado = '';
+    this.veiculosFiltrados = [...this.veiculos];
+  }
+
+  private normalizarTexto(valor: string): string {
+    return valor
+      .trim()
+      .toLocaleLowerCase('pt-BR')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
   }
 }

@@ -9,9 +9,74 @@
       <h1>Veículos cadastrados</h1>
 
       <p>
-        Consulte os veículos disponíveis no sistema.
+        Consulte os veículos por marca, modelo ou status.
       </p>
     </header>
+
+    <form
+      class="filtros"
+      (ngSubmit)="pesquisar()"
+      autocomplete="off"
+    >
+      <div class="filtros-campos">
+
+        <div class="form-group">
+          <label for="termoPesquisa">Marca ou modelo</label>
+
+          <input
+            id="termoPesquisa"
+            type="text"
+            name="termoPesquisa"
+            [(ngModel)]="termoPesquisa"
+            placeholder="Ex.: Toyota ou Corolla"
+            [disabled]="carregando"
+          />
+
+          <small>
+            Pesquise pela marca ou pelo modelo do veículo.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="statusSelecionado">Status</label>
+
+          <select
+            id="statusSelecionado"
+            name="statusSelecionado"
+            [(ngModel)]="statusSelecionado"
+            [disabled]="carregando"
+          >
+            <option value="">Todos</option>
+            <option value="DISPONIVEL">Disponível</option>
+            <option value="VENDIDO">Vendido</option>
+          </select>
+
+          <small>
+            Filtre os veículos de acordo com a situação atual.
+          </small>
+        </div>
+
+      </div>
+
+      <div class="filtros-acoes">
+        <button
+          class="search-button"
+          type="submit"
+          [disabled]="carregando"
+        >
+          Pesquisar
+        </button>
+
+        <button
+          class="clear-button"
+          type="button"
+          (click)="limparPesquisa()"
+          [disabled]="carregando"
+        >
+          Limpar
+        </button>
+      </div>
+    </form>
 
     <p
       class="loading-message"
@@ -32,53 +97,74 @@
       *ngIf="
         !carregando &&
         !mensagemErro &&
-        veiculos.length === 0
+        veiculosFiltrados.length === 0
       "
     >
-      Nenhum veículo cadastrado.
+      Nenhum veículo encontrado.
     </div>
 
     <div
-      class="veiculos-lista"
       *ngIf="
         !carregando &&
         !mensagemErro &&
-        veiculos.length > 0
+        veiculosFiltrados.length > 0
       "
     >
-      <article
-        class="veiculo-item"
-        *ngFor="let veiculo of veiculos"
-      >
-        <div class="veiculo-info">
+      <div class="resultado-resumo">
+        {{ veiculosFiltrados.length }}
+        {{
+          veiculosFiltrados.length === 1
+            ? 'veículo encontrado'
+            : 'veículos encontrados'
+        }}
+      </div>
 
-          <h2>
-            {{ veiculo.marca }} {{ veiculo.modelo }}
-          </h2>
+      <div class="veiculos-lista">
+        <article
+          class="veiculo-item"
+          *ngFor="let veiculo of veiculosFiltrados"
+        >
+          <div class="veiculo-info">
 
-          <div class="veiculo-detalhes">
+            <h2>
+              {{ veiculo.marca }} {{ veiculo.modelo }}
+            </h2>
 
-            <p>
-              <strong>Ano</strong>
-              <span>{{ veiculo.ano }}</span>
-            </p>
+            <div class="veiculo-detalhes">
 
-            <p>
-              <strong>Preço</strong>
-              <span>{{ veiculo.preco | currency:'BRL' }}</span>
-            </p>
+              <p>
+                <strong>Ano</strong>
+                <span>{{ veiculo.ano }}</span>
+              </p>
 
-            <p>
-              <strong>Status</strong>
-              <span class="status">
-                {{ veiculo.status }}
-              </span>
-            </p>
+              <p>
+                <strong>Preço</strong>
+                <span>{{ veiculo.preco | currency:'BRL' }}</span>
+              </p>
+
+              <p>
+                <strong>Status</strong>
+
+                <span
+                  class="status"
+                  [class.status-disponivel]="veiculo.status === 'DISPONIVEL'"
+                  [class.status-vendido]="veiculo.status === 'VENDIDO'"
+                >
+                  {{
+                    veiculo.status === 'DISPONIVEL'
+                      ? 'Disponível'
+                      : veiculo.status === 'VENDIDO'
+                        ? 'Vendido'
+                        : veiculo.status
+                  }}
+                </span>
+              </p>
+
+            </div>
 
           </div>
-
-        </div>
-      </article>
+        </article>
+      </div>
     </div>
 
   </section>
