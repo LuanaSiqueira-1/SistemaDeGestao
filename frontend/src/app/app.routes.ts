@@ -3,11 +3,17 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
 import { Admin } from './pages/admin/admin';
+import { ClienteCadastro } from './pages/cliente-cadastro/cliente-cadastro';
+import { ClienteDetalhe } from './pages/cliente-detalhe/cliente-detalhe';
+import { ClienteListagem } from './pages/cliente-listagem/cliente-listagem';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { VeiculoCadastro } from './pages/veiculo-cadastro/veiculo-cadastro';
 import { VeiculoListagem } from './pages/veiculo-listagem/veiculo-listagem';
+import { VendaCadastro } from './pages/venda-cadastro/venda-cadastro';
+import { VendaDetalhe } from './pages/venda-detalhe/venda-detalhe';
+import { VendaListagem } from './pages/venda-listagem/venda-listagem';
 
 export const routes: Routes = [
   {
@@ -31,6 +37,36 @@ export const routes: Routes = [
   {
     path: 'veiculos',
     component: VeiculoListagem,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'clientes/cadastro',
+    component: ClienteCadastro,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'clientes',
+    component: ClienteListagem,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'clientes/:id',
+    component: ClienteDetalhe,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vendas/cadastro',
+    component: VendaCadastro,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vendas/:id',
+    component: VendaDetalhe,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vendas',
+    component: VendaListagem,
     canActivate: [authGuard],
   },
   {
