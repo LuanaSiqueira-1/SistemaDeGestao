@@ -48,6 +48,16 @@ jobs:
       - name: Dar permissão ao Maven Wrapper
         run: chmod +x backend/mvnw
 
+      # Garante que o runner vai segurar a onda até o MySQL responder de verdade
+      - name: Aguardar o MySQL ficar pronto
+        run: |
+          echo "Aguardando o MySQL subir na porta 3306..."
+          until nc -z -v -w30 localhost 3306; do
+            echo "Ainda aguardando o banco..."
+            sleep 2
+          done
+          echo "MySQL pronto para conexões!"
+
       # Executa build, roda testes, gera relatório JaCoCo e envia tudo pro SonarCloud
       - name: Executar build, testes e análise do Sonar
         working-directory: backend
