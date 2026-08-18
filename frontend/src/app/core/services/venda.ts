@@ -2,6 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+
 import { PaginaResponse } from '../models/paginacao';
 
 import {
@@ -15,7 +17,7 @@ import {
   providedIn: 'root',
 })
 export class VendaService {
-  private readonly apiUrl = 'http://localhost:8080/api/vendas';
+  private readonly apiUrl = `${environment.apiUrl}/api/vendas`;
 
   constructor(private readonly http: HttpClient) {}
 
