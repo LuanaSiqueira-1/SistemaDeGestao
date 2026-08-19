@@ -1,4 +1,4 @@
-name: Backend CI
+name: Backend CI & SonarQube
 
 on:
   push:
@@ -34,6 +34,8 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # O Sonar precisa do histórico completo do Git para analisar o código
 
       - name: Configurar Java 21
         uses: actions/setup-java@v5
@@ -46,6 +48,26 @@ jobs:
       - name: Dar permissão ao Maven Wrapper
         run: chmod +x backend/mvnw
 
-      - name: Executar build, testes e cobertura
+      # Garante que o runner vai segurar a onda até o MySQL responder de verdade
+      - name: Aguardar o MySQL ficar pronto
+        run: |
+          echo "Aguardando o MySQL subir na porta 3306..."
+          until nc -z -v -w30 localhost 3306; do
+            echo "Ainda aguardando o banco..."
+            sleep 2
+          done
+          echo "MySQL pronto para conexões!"
+
+      # Executa build, roda testes, gera relatório JaCoCo e envia tudo pro SonarCloud
+      - name: Executar build, testes e análise do Sonar
         working-directory: backend
-        run: ./mvnw verify -Dspring.profiles.active=test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dspring.profiles.active=test \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=sistema-concessionaria-de-veiculos \
+            -Dsonar.projectKey=SistemaDeGestao \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
