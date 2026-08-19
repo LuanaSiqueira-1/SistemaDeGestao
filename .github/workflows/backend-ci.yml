@@ -68,6 +68,6 @@ jobs:
           ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dspring.profiles.active=test \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.organization=SEU_NOME_DE_ORGANIZACAO_AQUI \
-            -Dsonar.projectKey=SEU_PROJECT_KEY_AQUI \
+            -Dsonar.organization=sistema-concessionaria-de-veiculos \
+            -Dsonar.projectKey=SistemaDeGestao \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
