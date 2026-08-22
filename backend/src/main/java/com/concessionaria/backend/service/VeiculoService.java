@@ -8,8 +8,8 @@ import com.concessionaria.backend.dto.VeiculoCadastroRequest;
 import com.concessionaria.backend.dto.VeiculoListagemResponse;
 import com.concessionaria.backend.dto.VeiculoResponse;
 import com.concessionaria.backend.dto.VeiculoUpdateDTO;
-import com.concessionaria.backend.model.Veiculo;
 import com.concessionaria.backend.model.StatusVeiculo;
+import com.concessionaria.backend.model.Veiculo;
 import com.concessionaria.backend.repository.VeiculoRepository;
 
 @Service
