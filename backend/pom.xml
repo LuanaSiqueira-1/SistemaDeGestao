@@ -43,6 +43,13 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
+        <!-- Banco H2: Em memória para testes rápidos -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- MySQL: desenvolvimento local e testes -->
         <dependency>
             <groupId>com.mysql</groupId>
