@@ -1,5 +1,7 @@
 package com.concessionaria.backend.service;
 
+import java.util.List;
+
 import com.concessionaria.backend.model.Cliente;
 import com.concessionaria.backend.model.Veiculo;
 import com.concessionaria.backend.model.Venda;
@@ -18,6 +20,8 @@ import com.concessionaria.backend.dto.VendaDetalheResponse;
 import com.concessionaria.backend.dto.ClienteListagemResponse;
 import com.concessionaria.backend.dto.VeiculoListagemResponse;
 import com.concessionaria.backend.dto.ClienteDetalheResponse;
+import com.concessionaria.backend.dto.HistoricoCompraResponse;
+import com.concessionaria.backend.dto.HistoricoCompraResponse.VeiculoHistoricoResponse;
 import com.concessionaria.backend.dto.VeiculoResponse;
 
 import org.springframework.data.domain.Page;
@@ -136,5 +140,30 @@ public class VendaService {
                     veiculoDTO
             );
         });
+    }
+
+    @Transactional(readOnly = true)
+    public List<HistoricoCompraResponse> buscarHistoricoCompras(Long clienteId) {
+        if (!clienteRepository.existsById(clienteId)) {
+            throw new ClienteNaoEncontradoException(clienteId);
+        }
+
+        return vendaRepository.findByClienteIdOrderByDataVendaDesc(clienteId)
+                .stream()
+                .map(venda -> {
+                    Veiculo veiculo = venda.getVeiculo();
+
+                    return new HistoricoCompraResponse(
+                            new VeiculoHistoricoResponse(
+                                    veiculo.getId(),
+                                    veiculo.getMarca(),
+                                    veiculo.getModelo(),
+                                    veiculo.getAno()
+                            ),
+                            venda.getDataVenda(),
+                            venda.getValor()
+                    );
+                })
+                .toList();
     }
 }

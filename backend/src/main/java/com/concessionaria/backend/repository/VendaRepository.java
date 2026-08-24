@@ -1,5 +1,7 @@
 package com.concessionaria.backend.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VendaRepository extends JpaRepository<Venda, Long> {
+
+    List<Venda> findByClienteIdOrderByDataVendaDesc(Long clienteId);
 
     @Query("""
             SELECT venda
