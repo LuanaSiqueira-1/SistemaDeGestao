@@ -2,6 +2,7 @@ package com.concessionaria.backend.service;
 
 import org.springframework.stereotype.Service;
 
+import com.concessionaria.backend.dto.ClienteAtualizacaoRequest;
 import com.concessionaria.backend.dto.ClienteCadastroRequest;
 import com.concessionaria.backend.dto.ClienteDetalheResponse;
 import com.concessionaria.backend.dto.ClienteListagemResponse;
@@ -64,6 +65,26 @@ public class ClienteService {
                 .orElseThrow(() -> new ClienteNaoEncontradoException(id));
 
         return paraDetalheResponse(cliente);
+    }
+
+    public ClienteResponse atualizar(Long id, ClienteAtualizacaoRequest request) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ClienteNaoEncontradoException(id));
+
+        cliente.setNome(request.nome());
+        cliente.setCpf(request.cpf());
+        cliente.setTelefone(request.telefone());
+        cliente.setEmail(request.email());
+
+        Cliente clienteSalvo = clienteRepository.save(cliente);
+
+        return new ClienteResponse(
+                clienteSalvo.getId(),
+                clienteSalvo.getNome(),
+                clienteSalvo.getCpf(),
+                clienteSalvo.getTelefone(),
+                clienteSalvo.getEmail()
+        );
     }
 
     private ClienteListagemResponse paraListagemResponse(Cliente cliente) {
