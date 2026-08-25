@@ -8,6 +8,7 @@ import com.concessionaria.backend.dto.VeiculoCadastroRequest;
 import com.concessionaria.backend.dto.VeiculoListagemResponse;
 import com.concessionaria.backend.dto.VeiculoResponse;
 import com.concessionaria.backend.dto.VeiculoUpdateDTO;
+import com.concessionaria.backend.exception.VeiculoNaoEncontradoException;
 import com.concessionaria.backend.model.StatusVeiculo;
 import com.concessionaria.backend.model.Veiculo;
 import com.concessionaria.backend.repository.VeiculoRepository;
@@ -48,11 +49,8 @@ public class VeiculoService {
     // Ricardo - responsável pela consulta/listagem de veículos.
     public List<VeiculoListagemResponse> listarVeiculos() {
 
-        // Busca todos os veículos cadastrados no banco.
         return veiculoRepository.findAll()
                 .stream()
-
-                // Converte cada veículo para o formato definido no contrato da listagem.
                 .map(veiculo -> new VeiculoListagemResponse(
                         veiculo.getId(),
                         veiculo.getMarca(),
@@ -68,17 +66,22 @@ public class VeiculoService {
      * Laysa - Responsável pela implementação da US10 (Edição de veículo)
      */
     public VeiculoResponse atualizar(Long id, VeiculoUpdateDTO dto) {
-        // 1. Localiza o veículo existente ou lança erro coerente se não encontrado (Q5-06)
-        Veiculo veiculoExistente = veiculoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Veículo não encontrado com o ID: " + id));
 
-        // 2. Regra de Consistência (Q5-07): Se o estado atual no banco for VENDIDO, 
-        // a edição manual não pode forçar a volta para DISPONÍVEL silenciosamente.
-        if (veiculoExistente.getStatus() == StatusVeiculo.VENDIDO && dto.getStatus() != StatusVeiculo.VENDIDO) {
-            throw new RuntimeException("Regra de Negócio: Não é permitido alterar manualmente o status de um veículo já VENDIDO.");
+        // 1. Localiza o veículo ou retorna erro 404 pelo GlobalExceptionHandler
+        Veiculo veiculoExistente = veiculoRepository.findById(id)
+                .orElseThrow(() -> new VeiculoNaoEncontradoException(id));
+
+        // 2. Regra de consistência:
+        // um veículo vendido não pode voltar manualmente para outro status
+        if (veiculoExistente.getStatus() == StatusVeiculo.VENDIDO
+                && dto.getStatus() != StatusVeiculo.VENDIDO) {
+
+            throw new RuntimeException(
+                    "Regra de Negócio: Não é permitido alterar manualmente o status de um veículo já VENDIDO."
+            );
         }
 
-        // 3. Atualiza os campos permitidos pelo cadastro vigente (Q5-06)
+        // 3. Atualiza os campos
         veiculoExistente.setMarca(dto.getMarca());
         veiculoExistente.setModelo(dto.getModelo());
         veiculoExistente.setAno(dto.getAno());
@@ -87,10 +90,10 @@ public class VeiculoService {
         veiculoExistente.setPreco(dto.getPreco());
         veiculoExistente.setStatus(dto.getStatus());
 
-        // 4. Persiste a atualização válida no banco de dados
+        // 4. Persiste no banco
         Veiculo veiculoSalvo = veiculoRepository.save(veiculoExistente);
 
-        // 5. Retorna a representação suficiente conforme o padrão do contrato (Q5-06)
+        // 5. Retorna os dados atualizados
         return new VeiculoResponse(
                 veiculoSalvo.getId(),
                 veiculoSalvo.getMarca(),

@@ -4,12 +4,13 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.concessionaria.backend.dto.ErroResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.http.HttpStatus;
+
+import com.concessionaria.backend.dto.ErroResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,6 +19,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErroResponse> handleValidationErrors(
             MethodArgumentNotValidException exception
     ) {
+
         Map<String, String> campos = new LinkedHashMap<>();
 
         exception.getBindingResult()
@@ -40,11 +42,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             ClienteNaoEncontradoException.class,
-            VendaNaoEncontradaException.class
+            VendaNaoEncontradaException.class,
+            VeiculoNaoEncontradoException.class
     })
     public ResponseEntity<ErroResponse> handleRecursoNaoEncontrado(
             RuntimeException exception
     ) {
+
         return criarResposta(
                 HttpStatus.NOT_FOUND,
                 "Recurso não encontrado",
@@ -56,6 +60,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErroResponse> handleConflito(
             EmailJaCadastradoException exception
     ) {
+
+        return criarResposta(
+                HttpStatus.CONFLICT,
+                "Conflito",
+                exception.getMessage()
+        );
+    }
+
+    @ExceptionHandler(StatusVeiculoInvalidoException.class)
+    public ResponseEntity<ErroResponse> handleStatusVeiculoInvalido(
+            StatusVeiculoInvalidoException exception
+    ) {
+
         return criarResposta(
                 HttpStatus.CONFLICT,
                 "Conflito",
@@ -68,6 +85,7 @@ public class GlobalExceptionHandler {
             String erro,
             String mensagem
     ) {
+
         ErroResponse resposta = new ErroResponse(
                 status.value(),
                 erro,

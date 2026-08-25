@@ -1,8 +1,7 @@
 package com.concessionaria.backend.security;
 
-import com.concessionaria.backend.model.Role;
-import com.concessionaria.backend.model.User;
-import com.concessionaria.backend.repository.UserRepository;
+import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +10,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.concessionaria.backend.model.Role;
+import com.concessionaria.backend.model.User;
+import com.concessionaria.backend.repository.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,7 +43,9 @@ class VeiculoSecurityIntegrationTest {
 
     @BeforeEach
     void criarUsuarioAutenticado() {
-        String email = "rianna." + UUID.randomUUID() + "@ufape.edu.br";
+
+        String email =
+                "rianna." + UUID.randomUUID() + "@ufape.edu.br";
 
         User usuario = new User(
                 null,
@@ -52,18 +55,23 @@ class VeiculoSecurityIntegrationTest {
                 Role.USER
         );
 
-        User usuarioSalvo = userRepository.saveAndFlush(usuario);
-        tokenValido = jwtService.generateToken(usuarioSalvo);
+        User usuarioSalvo =
+                userRepository.saveAndFlush(usuario);
+
+        tokenValido =
+                jwtService.generateToken(usuarioSalvo);
     }
 
     @Test
     void deveBloquearConsultaSemToken() throws Exception {
+
         mockMvc.perform(get("/api/veiculos"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void deveBloquearCadastroSemToken() throws Exception {
+
         mockMvc.perform(post("/api/veiculos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonVeiculoValido()))
@@ -72,15 +80,23 @@ class VeiculoSecurityIntegrationTest {
 
     @Test
     void devePermitirConsultaComTokenValido() throws Exception {
+
         mockMvc.perform(get("/api/veiculos")
-                        .header("Authorization", "Bearer " + tokenValido))
+                        .header(
+                                "Authorization",
+                                "Bearer " + tokenValido
+                        ))
                 .andExpect(status().isOk());
     }
 
     @Test
     void devePermitirCadastroComTokenValido() throws Exception {
+
         mockMvc.perform(post("/api/veiculos")
-                        .header("Authorization", "Bearer " + tokenValido)
+                        .header(
+                                "Authorization",
+                                "Bearer " + tokenValido
+                        )
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonVeiculoValido()))
                 .andExpect(status().isCreated())
@@ -89,15 +105,83 @@ class VeiculoSecurityIntegrationTest {
                 .andExpect(jsonPath("$.status").value("DISPONIVEL"));
     }
 
+    /*
+     * Q5-07 - atualização de veículo também exige autenticação
+     */
+    @Test
+    void deveBloquearAtualizacaoSemToken() throws Exception {
+
+        mockMvc.perform(put("/api/veiculos/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "marca": "Toyota",
+                                  "modelo": "Corolla",
+                                  "ano": 2024,
+                                  "cor": "Prata",
+                                  "quilometragem": 1000,
+                                  "preco": 150000.00,
+                                  "status": "DISPONIVEL"
+                                }
+                                """))
+                .andExpect(status().isUnauthorized());
+    }
+
+    /*
+     * Q5-07 - usuário autenticado pode atualizar veículo
+     */
+    @Test
+    void devePermitirAtualizacaoComTokenValido() throws Exception {
+
+        mockMvc.perform(post("/api/veiculos")
+                        .header(
+                                "Authorization",
+                                "Bearer " + tokenValido
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonVeiculoValido()))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(put("/api/veiculos/1")
+                        .header(
+                                "Authorization",
+                                "Bearer " + tokenValido
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "marca": "Toyota",
+                                  "modelo": "Corolla Cross",
+                                  "ano": 2025,
+                                  "cor": "Preto",
+                                  "quilometragem": 500,
+                                  "preco": 180000.00,
+                                  "status": "DISPONIVEL"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.modelo")
+                        .value("Corolla Cross"))
+                .andExpect(jsonPath("$.ano")
+                        .value(2025))
+                .andExpect(jsonPath("$.status")
+                        .value("DISPONIVEL"));
+    }
+
     @Test
     void deveBloquearRequisicaoComTokenInvalido() throws Exception {
+
         mockMvc.perform(get("/api/veiculos")
-                        .header("Authorization", "Bearer token-invalido"))
+                        .header(
+                                "Authorization",
+                                "Bearer token-invalido"
+                        ))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void devePermitirConsultaComTokenDeAdmin() throws Exception {
+
         String emailAdmin =
                 "admin." + UUID.randomUUID() + "@ufape.edu.br";
 
@@ -125,6 +209,7 @@ class VeiculoSecurityIntegrationTest {
 
     @Test
     void deveBloquearUsuarioComRoleIncorreta() throws Exception {
+
         mockMvc.perform(get("/api/admin/dashboard")
                         .header(
                                 "Authorization",
@@ -135,8 +220,11 @@ class VeiculoSecurityIntegrationTest {
 
     @Test
     void devePermitirAdminNaAreaAdministrativa() throws Exception {
+
         String emailAdmin =
-                "admin.dashboard." + UUID.randomUUID() + "@ufape.edu.br";
+                "admin.dashboard."
+                        + UUID.randomUUID()
+                        + "@ufape.edu.br";
 
         User administrador = new User(
                 null,
@@ -164,6 +252,7 @@ class VeiculoSecurityIntegrationTest {
     }
 
     private String jsonVeiculoValido() {
+
         return """
                 {
                   "marca": "Toyota",
