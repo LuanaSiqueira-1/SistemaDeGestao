@@ -221,6 +221,33 @@ class VeiculoServiceTest {
                 .save(any(Veiculo.class));
     }
 
+    @Test
+    void devePermitirAtualizacaoMantendoStatusVendido() {
+        Veiculo veiculo = criarVeiculo(1L, "Honda", "Civic");
+        veiculo.setStatus(StatusVeiculo.VENDIDO);
+
+        VeiculoUpdateDTO dto = criarUpdateDTO(
+                "Toyota",
+                "Corolla",
+                2025,
+                "Preto",
+                1000L,
+                "160000.00",
+                StatusVeiculo.VENDIDO
+        );
+
+        when(veiculoRepository.findById(1L))
+                .thenReturn(Optional.of(veiculo));
+
+        when(veiculoRepository.save(any(Veiculo.class)))
+                .thenAnswer(invocacao -> invocacao.getArgument(0));
+
+        VeiculoResponse resposta = veiculoService.atualizar(1L, dto);
+
+        assertThat(resposta.status()).isEqualTo(StatusVeiculo.VENDIDO);
+        verify(veiculoRepository).save(veiculo);
+    }
+
     private Veiculo criarVeiculo(
             Long id,
             String marca,

@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +26,8 @@ import com.concessionaria.backend.dto.VendaDetalheResponse;
 import com.concessionaria.backend.dto.VendaListagemResponse;
 import com.concessionaria.backend.dto.VendaRequestDTO;
 import com.concessionaria.backend.dto.VendaResponseDTO;
+import com.concessionaria.backend.dto.HistoricoCompraResponse;
+import com.concessionaria.backend.exception.ClienteNaoEncontradoException;
 import com.concessionaria.backend.exception.StatusVeiculoInvalidoException;
 import com.concessionaria.backend.exception.VeiculoNaoEncontradoException;
 import com.concessionaria.backend.exception.VendaNaoEncontradaException;
@@ -279,6 +282,70 @@ class VendaServiceTest {
                 .hasMessage(
                         "Venda não encontrada com o ID: 99"
                 );
+    }
+
+    @Test
+    void deveRetornarHistoricoDeComprasDoCliente() {
+        Veiculo veiculo = criarVeiculo();
+
+        Venda venda = new Venda(
+                20L,
+                LocalDate.of(2026, 8, 20),
+                new BigDecimal("95000.00"),
+                veiculo,
+                null
+        );
+
+        when(clienteRepository.existsById(1L))
+                .thenReturn(true);
+
+        when(vendaRepository.findByClienteIdOrderByDataVendaDesc(1L))
+                .thenReturn(List.of(venda));
+
+        List<HistoricoCompraResponse> resposta =
+                vendaService.buscarHistoricoCompras(1L);
+
+        assertThat(resposta).hasSize(1);
+        assertThat(resposta.get(0).veiculo().id()).isEqualTo(2L);
+        assertThat(resposta.get(0).veiculo().marca()).isEqualTo("Toyota");
+        assertThat(resposta.get(0).veiculo().modelo()).isEqualTo("Corolla");
+        assertThat(resposta.get(0).dataVenda())
+                .isEqualTo(LocalDate.of(2026, 8, 20));
+        assertThat(resposta.get(0).valor())
+                .isEqualByComparingTo("95000.00");
+
+        verify(clienteRepository).existsById(1L);
+        verify(vendaRepository)
+                .findByClienteIdOrderByDataVendaDesc(1L);
+    }
+
+    @Test
+    void deveRetornarHistoricoVazioQuandoClienteNaoPossuirCompras() {
+        when(clienteRepository.existsById(2L))
+                .thenReturn(true);
+
+        when(vendaRepository.findByClienteIdOrderByDataVendaDesc(2L))
+                .thenReturn(List.of());
+
+        List<HistoricoCompraResponse> resposta =
+                vendaService.buscarHistoricoCompras(2L);
+
+        assertThat(resposta).isEmpty();
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoClienteDoHistoricoNaoExistir() {
+        when(clienteRepository.existsById(99L))
+                .thenReturn(false);
+
+        assertThatThrownBy(() ->
+                vendaService.buscarHistoricoCompras(99L)
+        )
+                .isInstanceOf(ClienteNaoEncontradoException.class)
+                .hasMessage("Cliente não encontrado com o ID: 99");
+
+        verify(vendaRepository, never())
+                .findByClienteIdOrderByDataVendaDesc(99L);
     }
 
     private Cliente criarCliente() {
