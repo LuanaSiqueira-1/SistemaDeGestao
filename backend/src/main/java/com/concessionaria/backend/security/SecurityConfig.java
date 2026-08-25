@@ -28,7 +28,10 @@ public class SecurityConfig {
     @Value("${FRONTEND_URL:http://localhost:4200}")
     private String frontendUrl;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider) {
+    public SecurityConfig(
+            JwtAuthenticationFilter jwtAuthFilter,
+            AuthenticationProvider authenticationProvider
+    ) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.authenticationProvider = authenticationProvider;
     }
@@ -36,44 +39,79 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Aponta para a configuração explícita de CORS
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**")
+            )
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .exceptionHandling(exception -> exception
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .authenticationEntryPoint(
+                    new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
+                )
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                
-                // As histórias da 3ª iteração exigem funcionário autenticado, sem Role específica.
-                .requestMatchers(HttpMethod.POST, "/api/veiculos").authenticated()
-                .requestMatchers(HttpMethod.GET, "/api/veiculos").authenticated()
-                
-                // Laysa - US10: Permite a edição de veículos para qualquer funcionário autenticado
-                .requestMatchers(HttpMethod.PUT, "/api/veiculos/{id}").authenticated()
-                
+
+                .requestMatchers(
+                    HttpMethod.POST,
+                    "/api/veiculos"
+                ).authenticated()
+
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/veiculos"
+                ).authenticated()
+
+                .requestMatchers(
+                    HttpMethod.PUT,
+                    "/api/veiculos/{id}"
+                ).authenticated()
+
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(
+                jwtAuthFilter,
+                UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }
 
-    // Configuração explícita de CORS para liberar o consumo pelo Frontend
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
         configuration.setAllowedOrigins(List.of(frontendUrl));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+
+        configuration.setAllowedMethods(
+            List.of(
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "OPTIONS",
+                "PATCH"
+            )
+        );
+
+        configuration.setAllowedHeaders(
+            List.of(
+                "Authorization",
+                "Content-Type",
+                "X-Requested-With"
+            )
+        );
+
         configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
         source.registerCorsConfiguration("/**", configuration);
 
         return source;

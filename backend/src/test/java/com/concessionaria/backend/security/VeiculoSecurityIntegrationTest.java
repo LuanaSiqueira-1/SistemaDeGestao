@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.concessionaria.backend.model.Role;
 import com.concessionaria.backend.model.User;
 import com.concessionaria.backend.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -38,6 +39,9 @@ class VeiculoSecurityIntegrationTest {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private String tokenValido;
 
@@ -133,16 +137,27 @@ class VeiculoSecurityIntegrationTest {
     @Test
     void devePermitirAtualizacaoComTokenValido() throws Exception {
 
-        mockMvc.perform(post("/api/veiculos")
+        String respostaCadastro = mockMvc.perform(
+                post("/api/veiculos")
                         .header(
                                 "Authorization",
                                 "Bearer " + tokenValido
                         )
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonVeiculoValido()))
-                .andExpect(status().isCreated());
+                        .content(jsonVeiculoValido())
+        )
+        .andExpect(status().isCreated())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
 
-        mockMvc.perform(put("/api/veiculos/1")
+        long veiculoId = objectMapper
+                .readTree(respostaCadastro)
+                .get("id")
+                .asLong();
+
+        mockMvc.perform(
+                put("/api/veiculos/" + veiculoId)
                         .header(
                                 "Authorization",
                                 "Bearer " + tokenValido
