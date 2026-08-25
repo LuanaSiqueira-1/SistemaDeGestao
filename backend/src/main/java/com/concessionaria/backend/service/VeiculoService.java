@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.concessionaria.backend.dto.VeiculoCadastroRequest;
+import com.concessionaria.backend.dto.VeiculoDetalheResponse;
 import com.concessionaria.backend.dto.VeiculoListagemResponse;
 import com.concessionaria.backend.dto.VeiculoResponse;
 import com.concessionaria.backend.dto.VeiculoUpdateDTO;
@@ -61,6 +62,26 @@ public class VeiculoService {
                         veiculo.getStatus()
                 ))
                 .toList();
+    }
+
+    /**
+     * Consulta os dados completos de um veículo pelo ID.
+     */
+    public VeiculoDetalheResponse buscarPorId(Long id) {
+
+        Veiculo veiculo = veiculoRepository.findById(id)
+                .orElseThrow(() -> new VeiculoNaoEncontradoException(id));
+
+        return new VeiculoDetalheResponse(
+                veiculo.getId(),
+                veiculo.getMarca(),
+                veiculo.getModelo(),
+                veiculo.getAno(),
+                veiculo.getCor(),
+                veiculo.getQuilometragem(),
+                veiculo.getPreco(),
+                veiculo.getStatus()
+        );
     }
 
     /**
