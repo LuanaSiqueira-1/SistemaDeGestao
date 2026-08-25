@@ -5,6 +5,10 @@ import com.concessionaria.backend.dto.ClienteResponse;
 import com.concessionaria.backend.exception.ClienteNaoEncontradoException;
 import com.concessionaria.backend.model.Cliente;
 import com.concessionaria.backend.repository.ClienteRepository;
+import com.concessionaria.backend.dto.ClienteListagemResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,6 +83,31 @@ class ClienteServiceTest {
                 .hasMessage("Cliente não encontrado com o ID: 99");
 
         verify(clienteRepository, never()).save(any(Cliente.class));
+    }
+
+    @Test
+    void deveUsarFiltrosVaziosQuandoNomeECpfForemNulos() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(clienteRepository
+                .findByNomeContainingIgnoreCaseAndCpfContaining(
+                        "",
+                        "",
+                        pageable
+                ))
+                .thenReturn(Page.empty(pageable));
+
+        Page<ClienteListagemResponse> resposta =
+                clienteService.listar(null, null, pageable);
+
+        assertThat(resposta).isEmpty();
+
+        verify(clienteRepository)
+                .findByNomeContainingIgnoreCaseAndCpfContaining(
+                        "",
+                        "",
+                        pageable
+                );
     }
 
     private Cliente criarCliente() {
