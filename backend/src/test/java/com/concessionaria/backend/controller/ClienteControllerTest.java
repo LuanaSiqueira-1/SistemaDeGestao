@@ -6,6 +6,14 @@ import com.concessionaria.backend.exception.ClienteNaoEncontradoException;
 import com.concessionaria.backend.exception.GlobalExceptionHandler;
 import com.concessionaria.backend.service.ClienteService;
 import com.concessionaria.backend.service.VendaService;
+import com.concessionaria.backend.dto.HistoricoCompraResponse;
+import com.concessionaria.backend.dto.HistoricoCompraResponse.VeiculoHistoricoResponse;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -121,6 +129,52 @@ class ClienteControllerTest {
                                   "email": "marina.oliveira@teste.com"
                                 }
                                 """))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.erro")
+                        .value("Recurso não encontrado"))
+                .andExpect(jsonPath("$.mensagem")
+                        .value("Cliente não encontrado com o ID: 99"));
+    }
+
+    @Test
+    void deveRetornarHistoricoDeComprasERetornar200() throws Exception {
+        HistoricoCompraResponse historico = new HistoricoCompraResponse(
+                new VeiculoHistoricoResponse(
+                        2L,
+                        "Honda",
+                        "Civic",
+                        2024
+                ),
+                LocalDate.of(2026, 8, 20),
+                new BigDecimal("90000.00")
+        );
+
+        when(vendaService.buscarHistoricoCompras(1L))
+                .thenReturn(List.of(historico));
+
+        mockMvc.perform(get("/api/clientes/1/historico-compras"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].veiculo.id").value(2))
+                .andExpect(jsonPath("$[0].veiculo.marca").value("Honda"))
+                .andExpect(jsonPath("$[0].veiculo.modelo").value("Civic"))
+                .andExpect(jsonPath("$[0].veiculo.ano").value(2024))
+                .andExpect(jsonPath("$[0].dataVenda[0]").value(2026))
+                .andExpect(jsonPath("$[0].dataVenda[1]").value(8))
+                .andExpect(jsonPath("$[0].dataVenda[2]").value(20))
+                .andExpect(jsonPath("$[0].valor").value(90000.00));
+
+        verify(vendaService).buscarHistoricoCompras(1L);
+    }
+
+    @Test
+    void deveRetornar404QuandoClienteDoHistoricoNaoExistir()
+            throws Exception {
+
+        when(vendaService.buscarHistoricoCompras(99L))
+                .thenThrow(new ClienteNaoEncontradoException(99L));
+
+        mockMvc.perform(get("/api/clientes/99/historico-compras"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.erro")
