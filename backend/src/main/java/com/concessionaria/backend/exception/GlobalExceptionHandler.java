@@ -1,5 +1,6 @@
 package com.concessionaria.backend.exception;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,6 +15,8 @@ import com.concessionaria.backend.dto.ErroResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private final Clock clock = Clock.systemUTC();
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroResponse> handleValidationErrors(
@@ -34,10 +37,12 @@ public class GlobalExceptionHandler {
                 "Dados inválidos",
                 "Um ou mais campos estão inválidos.",
                 campos,
-                LocalDateTime.now()
+                LocalDateTime.now(clock)
         );
 
-        return ResponseEntity.badRequest().body(resposta);
+        return ResponseEntity
+                .badRequest()
+                .body(resposta);
     }
 
     @ExceptionHandler({
@@ -91,7 +96,7 @@ public class GlobalExceptionHandler {
                 erro,
                 mensagem,
                 Map.of(),
-                LocalDateTime.now()
+                LocalDateTime.now(clock)
         );
 
         return ResponseEntity

@@ -21,6 +21,7 @@ import com.concessionaria.backend.dto.VeiculoCadastroRequest;
 import com.concessionaria.backend.dto.VeiculoListagemResponse;
 import com.concessionaria.backend.dto.VeiculoResponse;
 import com.concessionaria.backend.dto.VeiculoUpdateDTO;
+import com.concessionaria.backend.exception.StatusVeiculoInvalidoException;
 import com.concessionaria.backend.exception.VeiculoNaoEncontradoException;
 import com.concessionaria.backend.model.StatusVeiculo;
 import com.concessionaria.backend.model.Veiculo;
@@ -143,8 +144,10 @@ class VeiculoServiceTest {
         assertThat(resposta.marca()).isEqualTo("Toyota");
         assertThat(resposta.modelo()).isEqualTo("Corolla");
         assertThat(resposta.ano()).isEqualTo(2025);
+
         assertThat(resposta.preco())
                 .isEqualByComparingTo("160000.00");
+
         assertThat(resposta.status())
                 .isEqualTo(StatusVeiculo.DISPONIVEL);
 
@@ -209,9 +212,9 @@ class VeiculoServiceTest {
         assertThatThrownBy(
                 () -> veiculoService.atualizar(1L, dto)
         )
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(StatusVeiculoInvalidoException.class)
                 .hasMessage(
-                        "Regra de Negócio: Não é permitido alterar manualmente o status de um veículo já VENDIDO."
+                        "Não é permitido alterar manualmente o status de um veículo já VENDIDO."
                 );
 
         verify(veiculoRepository, never())

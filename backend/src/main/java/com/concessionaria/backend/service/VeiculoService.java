@@ -8,6 +8,7 @@ import com.concessionaria.backend.dto.VeiculoCadastroRequest;
 import com.concessionaria.backend.dto.VeiculoListagemResponse;
 import com.concessionaria.backend.dto.VeiculoResponse;
 import com.concessionaria.backend.dto.VeiculoUpdateDTO;
+import com.concessionaria.backend.exception.StatusVeiculoInvalidoException;
 import com.concessionaria.backend.exception.VeiculoNaoEncontradoException;
 import com.concessionaria.backend.model.StatusVeiculo;
 import com.concessionaria.backend.model.Veiculo;
@@ -76,8 +77,8 @@ public class VeiculoService {
         if (veiculoExistente.getStatus() == StatusVeiculo.VENDIDO
                 && dto.getStatus() != StatusVeiculo.VENDIDO) {
 
-            throw new RuntimeException(
-                    "Regra de Negócio: Não é permitido alterar manualmente o status de um veículo já VENDIDO."
+            throw new StatusVeiculoInvalidoException(
+                    "Não é permitido alterar manualmente o status de um veículo já VENDIDO."
             );
         }
 
