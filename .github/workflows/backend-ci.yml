@@ -69,5 +69,5 @@ jobs:
             -Dspring.profiles.active=test \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=sistema-concessionaria-de-veiculos \
-            -Dsonar.projectKey=SistemaDeGestao \
+            -Dsonar.projectKey=SistemaConcessionaria-de-Veiculos_SistemaDeGestao \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml

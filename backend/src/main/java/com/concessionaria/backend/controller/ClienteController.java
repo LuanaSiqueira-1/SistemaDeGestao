@@ -76,6 +76,8 @@ public class ClienteController {
             @PathVariable Long id
     ) {
         return ResponseEntity.ok(vendaService.buscarHistoricoCompras(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ClienteResponse> atualizar(
             @PathVariable Long id,
