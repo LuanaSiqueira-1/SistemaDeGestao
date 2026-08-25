@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.concessionaria.backend.dto.VeiculoDetalheResponse;
 import com.concessionaria.backend.dto.VeiculoListagemResponse;
 import com.concessionaria.backend.dto.VeiculoResponse;
 import com.concessionaria.backend.dto.VeiculoUpdateDTO;
@@ -161,6 +162,60 @@ class VeiculoControllerTest {
     }
 
     /*
+     * Consulta detalhada de veículo por ID.
+     */
+    @Test
+    void deveBuscarVeiculoPorIdERetornar200()
+            throws Exception {
+
+        VeiculoDetalheResponse resposta =
+                new VeiculoDetalheResponse(
+                        1L,
+                        "Honda",
+                        "Civic",
+                        2024,
+                        "Prata",
+                        5000L,
+                        new BigDecimal("120000.00"),
+                        StatusVeiculo.DISPONIVEL
+                );
+
+        when(veiculoService.buscarPorId(1L))
+                .thenReturn(resposta);
+
+        mockMvc.perform(get("/api/veiculos/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.marca").value("Honda"))
+                .andExpect(jsonPath("$.modelo").value("Civic"))
+                .andExpect(jsonPath("$.ano").value(2024))
+                .andExpect(jsonPath("$.cor").value("Prata"))
+                .andExpect(jsonPath("$.quilometragem").value(5000))
+                .andExpect(jsonPath("$.preco").value(120000.00))
+                .andExpect(jsonPath("$.status").value("DISPONIVEL"));
+
+        verify(veiculoService).buscarPorId(1L);
+    }
+
+    @Test
+    void deveRetornar404QuandoBuscarVeiculoPorIdInexistente()
+            throws Exception {
+
+        when(veiculoService.buscarPorId(99L))
+                .thenThrow(new VeiculoNaoEncontradoException(99L));
+
+        mockMvc.perform(get("/api/veiculos/99"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.erro")
+                        .value("Recurso não encontrado"))
+                .andExpect(jsonPath("$.mensagem")
+                        .value("Veículo não encontrado com o ID: 99"));
+
+        verify(veiculoService).buscarPorId(99L);
+    }
+
+    /*
      * US10 - edição válida de veículo
      */
     @Test
@@ -248,6 +303,39 @@ class VeiculoControllerTest {
                         .value("O preço deve ser maior que zero"))
                 .andExpect(jsonPath("$.campos.status")
                         .value("O status não pode ser nulo"));
+
+        verify(
+                veiculoService,
+                never()
+        ).atualizar(
+                any(),
+                any(VeiculoUpdateDTO.class)
+        );
+    }
+
+    @Test
+    void deveRetornar400QuandoAtualizacaoTiverQuilometragemNegativa()
+            throws Exception {
+
+        mockMvc.perform(put("/api/veiculos/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "marca": "Toyota",
+                                  "modelo": "Corolla",
+                                  "ano": 2025,
+                                  "cor": "Preto",
+                                  "quilometragem": -1,
+                                  "preco": 150000.00,
+                                  "status": "DISPONIVEL"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.erro")
+                        .value("Dados inválidos"))
+                .andExpect(jsonPath("$.campos.quilometragem")
+                        .value("A quilometragem não pode ser negativa"));
 
         verify(
                 veiculoService,

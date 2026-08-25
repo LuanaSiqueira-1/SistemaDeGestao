@@ -11,11 +11,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.MediaType;
 
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -39,11 +41,11 @@ class ClienteVendaSecurityIntegrationTest {
     @BeforeEach
     void criarUsuarioAutenticado() {
         String email =
-                "rianna." + UUID.randomUUID() + "@ufape.edu.br";
+                "marina." + UUID.randomUUID() + "@ufape.edu.br";
 
         User usuario = new User(
                 null,
-                "Rianna",
+                "Marina Oliveira",
                 email,
                 passwordEncoder.encode("senhaTeste"),
                 Role.USER
@@ -118,5 +120,59 @@ class ClienteVendaSecurityIntegrationTest {
                                 "Bearer token-invalido"
                         ))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deveBloquearAtualizacaoDeClienteSemToken() throws Exception {
+        mockMvc.perform(put("/api/clientes/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {
+                              "nome": "Marina Oliveira",
+                              "cpf": "98765432100",
+                              "telefone": "81987654321",
+                              "email": "marina.oliveira@teste.com"
+                            }
+                            """))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deveBloquearHistoricoDeComprasSemToken() throws Exception {
+        mockMvc.perform(get("/api/clientes/1/historico-compras"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void devePermitirUsuarioAutenticadoAcessarAtualizacao()
+            throws Exception {
+
+        mockMvc.perform(put("/api/clientes/999999999")
+                        .header(
+                                "Authorization",
+                                "Bearer " + tokenValido
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {
+                              "nome": "Marina Oliveira",
+                              "cpf": "98765432100",
+                              "telefone": "81987654321",
+                              "email": "marina.oliveira@teste.com"
+                            }
+                            """))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void devePermitirUsuarioAutenticadoAcessarHistorico()
+            throws Exception {
+
+        mockMvc.perform(get("/api/clientes/999999999/historico-compras")
+                        .header(
+                                "Authorization",
+                                "Bearer " + tokenValido
+                        ))
+                .andExpect(status().isNotFound());
     }
 }
