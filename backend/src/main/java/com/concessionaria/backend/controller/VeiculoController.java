@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.concessionaria.backend.dto.VeiculoCadastroRequest;
+import com.concessionaria.backend.dto.VeiculoDetalheResponse;
 import com.concessionaria.backend.dto.VeiculoListagemResponse;
 import com.concessionaria.backend.dto.VeiculoResponse;
 import com.concessionaria.backend.dto.VeiculoUpdateDTO;
@@ -43,6 +44,16 @@ public class VeiculoController {
     @GetMapping
     public ResponseEntity<List<VeiculoListagemResponse>> listarVeiculos() {
         return ResponseEntity.ok(veiculoService.listarVeiculos());
+    }
+
+    /**
+     * Consulta os dados completos de um veículo pelo ID.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<VeiculoDetalheResponse> buscarPorId(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(veiculoService.buscarPorId(id));
     }
 
     /**
