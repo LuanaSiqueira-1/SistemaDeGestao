@@ -5,6 +5,13 @@ export interface ClienteCadastroRequest {
   email: string;
 }
 
+export interface ClienteAtualizacaoRequest {
+  nome: string;
+  cpf: string;
+  telefone: string;
+  email: string;
+}
+
 export interface ClienteResponse {
   id: number;
   nome: string;

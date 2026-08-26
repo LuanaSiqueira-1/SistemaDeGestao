@@ -5,6 +5,7 @@ import { roleGuard } from './core/guards/role-guard';
 import { Admin } from './pages/admin/admin';
 import { ClienteCadastro } from './pages/cliente-cadastro/cliente-cadastro';
 import { ClienteDetalhe } from './pages/cliente-detalhe/cliente-detalhe';
+import { ClienteEdicao } from './pages/cliente-edicao/cliente-edicao';
 import { ClienteListagem } from './pages/cliente-listagem/cliente-listagem';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Login } from './pages/login/login';
@@ -48,6 +49,11 @@ export const routes: Routes = [
   {
     path: 'clientes/cadastro',
     component: ClienteCadastro,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'clientes/:id/editar',
+    component: ClienteEdicao,
     canActivate: [authGuard],
   },
   {
