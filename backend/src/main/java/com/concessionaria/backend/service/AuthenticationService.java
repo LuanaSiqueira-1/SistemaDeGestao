@@ -1,5 +1,11 @@
 package com.concessionaria.backend.service;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.concessionaria.backend.dto.AuthResponse;
 import com.concessionaria.backend.dto.LoginRequest;
 import com.concessionaria.backend.dto.RegisterRequest;
@@ -9,11 +15,6 @@ import com.concessionaria.backend.model.Role;
 import com.concessionaria.backend.model.User;
 import com.concessionaria.backend.repository.UserRepository;
 import com.concessionaria.backend.security.JwtService;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService {
@@ -40,7 +41,7 @@ public class AuthenticationService {
 
     public RegisterResponse cadastrar(RegisterRequest request) {
         String emailNormalizado =
-                request.getEmail().trim().toLowerCase();
+                request.email().trim().toLowerCase();
 
         if (userService.emailJaCadastrado(emailNormalizado)) {
             throw new EmailJaCadastradoException();
@@ -48,9 +49,9 @@ public class AuthenticationService {
 
         User user = new User(
                 null,
-                request.getNome().trim(),
+                request.nome().trim(),
                 emailNormalizado,
-                passwordEncoder.encode(request.getSenha()),
+                passwordEncoder.encode(request.senha()),
                 Role.USER
         );
 

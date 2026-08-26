@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.concessionaria.backend.dto.VeiculoCadastroRequest;
+import com.concessionaria.backend.dto.VeiculoDetalheResponse;
 import com.concessionaria.backend.dto.VeiculoListagemResponse;
 import com.concessionaria.backend.dto.VeiculoResponse;
 import com.concessionaria.backend.dto.VeiculoUpdateDTO;
@@ -42,7 +43,6 @@ class VeiculoServiceTest {
 
     @Test
     void deveCadastrarVeiculoValido() {
-
         VeiculoCadastroRequest request = new VeiculoCadastroRequest(
                 "Toyota",
                 "Corolla",
@@ -73,7 +73,6 @@ class VeiculoServiceTest {
         assertThat(veiculoSalvo.getModelo()).isEqualTo("Corolla");
         assertThat(veiculoSalvo.getStatus())
                 .isEqualTo(StatusVeiculo.DISPONIVEL);
-
         assertThat(resposta.id()).isEqualTo(1L);
         assertThat(resposta.preco())
                 .isEqualByComparingTo("150000.00");
@@ -81,7 +80,6 @@ class VeiculoServiceTest {
 
     @Test
     void deveListarVeiculosCadastrados() {
-
         Veiculo veiculo = criarVeiculo(
                 1L,
                 "Honda",
@@ -102,7 +100,6 @@ class VeiculoServiceTest {
 
     @Test
     void deveRetornarListaVaziaQuandoNaoExistiremVeiculos() {
-
         when(veiculoRepository.findAll())
                 .thenReturn(List.of());
 
@@ -112,12 +109,36 @@ class VeiculoServiceTest {
         assertThat(resposta).isEmpty();
     }
 
-    /*
-     * US10 - deve atualizar um veículo existente
-     */
+    @Test
+    void deveBuscarVeiculoPorId() {
+        Veiculo veiculo = criarVeiculo(
+                1L,
+                "Honda",
+                "Civic"
+        );
+
+        when(veiculoRepository.findById(1L))
+                .thenReturn(Optional.of(veiculo));
+
+        VeiculoDetalheResponse resposta =
+                veiculoService.buscarPorId(1L);
+
+        assertThat(resposta.id()).isEqualTo(1L);
+        assertThat(resposta.marca()).isEqualTo("Honda");
+        assertThat(resposta.modelo()).isEqualTo("Civic");
+        assertThat(resposta.ano()).isEqualTo(2024);
+        assertThat(resposta.cor()).isEqualTo("Prata");
+        assertThat(resposta.quilometragem()).isEqualTo(0L);
+        assertThat(resposta.preco())
+                .isEqualByComparingTo("120000.00");
+        assertThat(resposta.status())
+                .isEqualTo(StatusVeiculo.DISPONIVEL);
+
+        verify(veiculoRepository).findById(1L);
+    }
+
     @Test
     void deveAtualizarVeiculoExistente() {
-
         Veiculo veiculoExistente =
                 criarVeiculo(1L, "Honda", "Civic");
 
@@ -144,10 +165,8 @@ class VeiculoServiceTest {
         assertThat(resposta.marca()).isEqualTo("Toyota");
         assertThat(resposta.modelo()).isEqualTo("Corolla");
         assertThat(resposta.ano()).isEqualTo(2025);
-
         assertThat(resposta.preco())
                 .isEqualByComparingTo("160000.00");
-
         assertThat(resposta.status())
                 .isEqualTo(StatusVeiculo.DISPONIVEL);
 
@@ -155,12 +174,8 @@ class VeiculoServiceTest {
         verify(veiculoRepository).save(veiculoExistente);
     }
 
-    /*
-     * US10 - deve retornar erro quando o veículo não existir
-     */
     @Test
     void deveLancarExcecaoQuandoVeiculoNaoExistir() {
-
         VeiculoUpdateDTO dto = criarUpdateDTO(
                 "Toyota",
                 "Corolla",
@@ -184,13 +199,8 @@ class VeiculoServiceTest {
                 .save(any(Veiculo.class));
     }
 
-    /*
-     * Q5-07 - veículo vendido não pode voltar manualmente
-     * para DISPONIVEL
-     */
     @Test
     void deveImpedirAlteracaoDeVeiculoVendidoParaDisponivel() {
-
         Veiculo veiculoVendido =
                 criarVeiculo(1L, "Toyota", "Corolla");
 
@@ -223,7 +233,9 @@ class VeiculoServiceTest {
 
     @Test
     void devePermitirAtualizacaoMantendoStatusVendido() {
-        Veiculo veiculo = criarVeiculo(1L, "Honda", "Civic");
+        Veiculo veiculo =
+                criarVeiculo(1L, "Honda", "Civic");
+
         veiculo.setStatus(StatusVeiculo.VENDIDO);
 
         VeiculoUpdateDTO dto = criarUpdateDTO(
@@ -242,9 +254,12 @@ class VeiculoServiceTest {
         when(veiculoRepository.save(any(Veiculo.class)))
                 .thenAnswer(invocacao -> invocacao.getArgument(0));
 
-        VeiculoResponse resposta = veiculoService.atualizar(1L, dto);
+        VeiculoResponse resposta =
+                veiculoService.atualizar(1L, dto);
 
-        assertThat(resposta.status()).isEqualTo(StatusVeiculo.VENDIDO);
+        assertThat(resposta.status())
+                .isEqualTo(StatusVeiculo.VENDIDO);
+
         verify(veiculoRepository).save(veiculo);
     }
 
@@ -253,7 +268,6 @@ class VeiculoServiceTest {
             String marca,
             String modelo
     ) {
-
         Veiculo veiculo = new Veiculo();
 
         veiculo.setId(id);
@@ -277,7 +291,6 @@ class VeiculoServiceTest {
             String preco,
             StatusVeiculo status
     ) {
-
         VeiculoUpdateDTO dto = new VeiculoUpdateDTO();
 
         dto.setMarca(marca);
