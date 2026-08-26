@@ -10,7 +10,6 @@ import { FormsModule, NgForm } from '@angular/forms';
 import {
   Auth,
   RegisterRequest,
-  Role,
 } from '../../core/services/auth';
 
 interface ErroApi {
@@ -28,7 +27,6 @@ export class Register {
   nome = '';
   email = '';
   senha = '';
-  role: Role = 'USER';
 
   mensagemSucesso = '';
   mensagemErro = '';
@@ -46,8 +44,10 @@ export class Register {
 
     if (formulario.invalid) {
       formulario.control.markAllAsTouched();
+
       this.mensagemErro =
         'Preencha todos os campos corretamente.';
+
       return;
     }
 
@@ -55,7 +55,6 @@ export class Register {
       nome: this.nome.trim(),
       email: this.email.trim(),
       senha: this.senha,
-      role: this.role,
     };
 
     this.enviando = true;
@@ -71,13 +70,11 @@ export class Register {
           nome: '',
           email: '',
           senha: '',
-          role: 'USER',
         });
 
         this.nome = '';
         this.email = '';
         this.senha = '';
-        this.role = 'USER';
 
         this.changeDetector.detectChanges();
 
@@ -111,9 +108,11 @@ export class Register {
 
   private obterMensagemErro(
     error: HttpErrorResponse,
-    mensagemPadrao = 'Verifique os dados informados.',
+    mensagemPadrao =
+      'Verifique os dados informados.',
   ): string {
-    const resposta = error.error as ErroApi | string | null;
+    const resposta =
+      error.error as ErroApi | string | null;
 
     if (!resposta) {
       return mensagemPadrao;
@@ -124,7 +123,8 @@ export class Register {
     }
 
     if (resposta.campos) {
-      const mensagens = Object.values(resposta.campos)
+      const mensagens = Object
+        .values(resposta.campos)
         .filter(
           (mensagem): mensagem is string =>
             typeof mensagem === 'string',

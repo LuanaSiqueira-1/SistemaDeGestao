@@ -55,25 +55,17 @@
         />
       </div>
 
-      <div class="form-group">
-        <label for="role">Tipo de usuário</label>
-
-        <select
-          id="role"
-          name="role"
-          [(ngModel)]="role"
-          required
-        >
-          <option value="USER">Usuário</option>
-          <option value="ADMIN">Administrador</option>
-        </select>
-      </div>
-
-      <p class="success-message" *ngIf="mensagemSucesso">
+      <p
+        class="success-message"
+        *ngIf="mensagemSucesso"
+      >
         {{ mensagemSucesso }}
       </p>
 
-      <p class="error-message" *ngIf="mensagemErro">
+      <p
+        class="error-message"
+        *ngIf="mensagemErro"
+      >
         {{ mensagemErro }}
       </p>
 
@@ -82,7 +74,11 @@
         type="submit"
         [disabled]="enviando"
       >
-        {{ enviando ? 'Cadastrando...' : 'Cadastrar' }}
+        {{
+          enviando
+            ? 'Cadastrando...'
+            : 'Cadastrar'
+        }}
       </button>
     </form>
   </section>
