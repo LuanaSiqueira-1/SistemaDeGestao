@@ -15,11 +15,32 @@ export interface VeiculoCadastroRequest {
   status: StatusVeiculo;
 }
 
+export interface VeiculoAtualizacaoRequest {
+  marca: string;
+  modelo: string;
+  ano: number;
+  cor?: string;
+  quilometragem?: number;
+  preco: number;
+  status: StatusVeiculo;
+}
+
 export interface VeiculoListagemResponse {
   id: number;
   marca: string;
   modelo: string;
   ano: number;
+  preco: number;
+  status: StatusVeiculo;
+}
+
+export interface VeiculoDetalheResponse {
+  id: number;
+  marca: string;
+  modelo: string;
+  ano: number;
+  cor: string | null;
+  quilometragem: number | null;
   preco: number;
   status: StatusVeiculo;
 }

@@ -10,6 +10,7 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { VeiculoCadastro } from './pages/veiculo-cadastro/veiculo-cadastro';
+import { VeiculoEdicao } from './pages/veiculo-edicao/veiculo-edicao';
 import { VeiculoListagem } from './pages/veiculo-listagem/veiculo-listagem';
 import { VendaCadastro } from './pages/venda-cadastro/venda-cadastro';
 import { VendaDetalhe } from './pages/venda-detalhe/venda-detalhe';
@@ -32,6 +33,11 @@ export const routes: Routes = [
   {
     path: 'veiculos/cadastro',
     component: VeiculoCadastro,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'veiculos/:id/editar',
+    component: VeiculoEdicao,
     canActivate: [authGuard],
   },
   {
