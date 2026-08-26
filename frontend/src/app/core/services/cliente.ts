@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 import {
+  ClienteAtualizacaoRequest,
   ClienteCadastroRequest,
   ClienteDetalheResponse,
   ClienteListagemResponse,
@@ -67,6 +68,16 @@ export class ClienteService {
   buscarPorId(id: number): Observable<ClienteDetalheResponse> {
     return this.http.get<ClienteDetalheResponse>(
       `${this.apiUrl}/${id}`,
+    );
+  }
+
+  atualizar(
+    id: number,
+    dados: ClienteAtualizacaoRequest,
+  ): Observable<ClienteResponse> {
+    return this.http.put<ClienteResponse>(
+      `${this.apiUrl}/${id}`,
+      dados,
     );
   }
 }

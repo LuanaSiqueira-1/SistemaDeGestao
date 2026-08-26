@@ -4,7 +4,9 @@
   <section class="cliente-card">
 
     <header class="cliente-header">
-      <span class="page-label">CONSULTA DE CLIENTES</span>
+      <span class="page-label">
+        CONSULTA DE CLIENTES
+      </span>
 
       <h1>Clientes cadastrados</h1>
 
@@ -101,7 +103,11 @@
     >
       <div class="resultado-resumo">
         {{ totalElementos }}
-        {{ totalElementos === 1 ? 'cliente encontrado' : 'clientes encontrados' }}
+        {{
+          totalElementos === 1
+            ? 'cliente encontrado'
+            : 'clientes encontrados'
+        }}
       </div>
 
       <div class="clientes-lista">
@@ -110,7 +116,13 @@
           *ngFor="let cliente of clientes"
         >
           <div class="cliente-info">
-            <h2>{{ cliente.nome }}</h2>
+            <div class="cliente-titulo">
+              <h2>{{ cliente.nome }}</h2>
+
+              <span class="cliente-id">
+                ID {{ cliente.id }}
+              </span>
+            </div>
 
             <div class="cliente-detalhes">
               <p>
@@ -119,12 +131,28 @@
               </p>
             </div>
 
-            <a
-              class="detail-link"
-              [routerLink]="['/clientes', cliente.id]"
-            >
-              Ver detalhes
-            </a>
+            <div class="cliente-acoes">
+              <a
+                class="detail-link"
+                [routerLink]="[
+                  '/clientes',
+                  cliente.id
+                ]"
+              >
+                Ver detalhes
+              </a>
+
+              <a
+                class="edit-link"
+                [routerLink]="[
+                  '/clientes',
+                  cliente.id,
+                  'editar'
+                ]"
+              >
+                Editar cliente
+              </a>
+            </div>
           </div>
         </article>
       </div>
@@ -138,13 +166,17 @@
           type="button"
           class="pagination-button"
           (click)="paginaAnterior()"
-          [disabled]="paginaAtual === 0 || carregando"
+          [disabled]="
+            paginaAtual === 0 ||
+            carregando
+          "
         >
           Anterior
         </button>
 
         <span class="pagina-atual">
-          Página {{ paginaAtual + 1 }} de {{ totalPaginas }}
+          Página {{ paginaAtual + 1 }}
+          de {{ totalPaginas }}
         </span>
 
         <button

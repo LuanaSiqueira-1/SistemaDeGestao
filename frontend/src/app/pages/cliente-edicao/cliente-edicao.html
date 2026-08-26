@@ -1,0 +1,211 @@
+<app-navbar></app-navbar>
+
+<main class="cliente-page">
+  <section class="cliente-card">
+
+    <header class="cliente-header">
+      <span class="page-label">
+        EDIÇÃO DE CLIENTE
+      </span>
+
+      <h1>Editar cliente</h1>
+
+      <p>
+        Atualize os dados do cliente selecionado.
+      </p>
+    </header>
+
+    <p
+      class="loading-message"
+      *ngIf="carregando"
+    >
+      Carregando cliente...
+    </p>
+
+    <div
+      class="error-state"
+      *ngIf="
+        !carregando &&
+        !clienteCarregado &&
+        mensagemErro
+      "
+    >
+      <p class="error-message">
+        {{ mensagemErro }}
+      </p>
+
+      <button
+        class="secondary-button state-button"
+        type="button"
+        (click)="voltar()"
+      >
+        Voltar para clientes
+      </button>
+    </div>
+
+    <form
+      class="cliente-form"
+      #formulario="ngForm"
+      (ngSubmit)="salvar(formulario)"
+      autocomplete="off"
+      novalidate
+      *ngIf="
+        !carregando &&
+        clienteCarregado
+      "
+    >
+      <div class="form-group">
+        <label for="nome">Nome</label>
+
+        <input
+          id="nome"
+          type="text"
+          name="nome"
+          [(ngModel)]="nome"
+          #nomeInput="ngModel"
+          placeholder="Ex.: Maria da Silva"
+          autocomplete="name"
+          required
+          [disabled]="enviando"
+        />
+
+        <small
+          class="field-error"
+          *ngIf="
+            nomeInput.invalid &&
+            nomeInput.touched
+          "
+        >
+          O nome é obrigatório.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="cpf">CPF</label>
+
+        <input
+          id="cpf"
+          type="text"
+          name="cpf"
+          [(ngModel)]="cpf"
+          #cpfInput="ngModel"
+          placeholder="Ex.: 12345678901"
+          inputmode="numeric"
+          required
+          [disabled]="enviando"
+        />
+
+        <small
+          class="field-error"
+          *ngIf="
+            cpfInput.invalid &&
+            cpfInput.touched
+          "
+        >
+          O CPF é obrigatório.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="telefone">Telefone</label>
+
+        <input
+          id="telefone"
+          type="tel"
+          name="telefone"
+          [(ngModel)]="telefone"
+          #telefoneInput="ngModel"
+          placeholder="Ex.: 81999998888"
+          autocomplete="tel"
+          required
+          [disabled]="enviando"
+        />
+
+        <small
+          class="field-error"
+          *ngIf="
+            telefoneInput.invalid &&
+            telefoneInput.touched
+          "
+        >
+          O telefone é obrigatório.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-mail</label>
+
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          #emailInput="ngModel"
+          placeholder="Ex.: maria@email.com"
+          autocomplete="email"
+          required
+          email
+          [disabled]="enviando"
+        />
+
+        <small
+          class="field-error"
+          *ngIf="
+            emailInput.errors?.['required'] &&
+            emailInput.touched
+          "
+        >
+          O e-mail é obrigatório.
+        </small>
+
+        <small
+          class="field-error"
+          *ngIf="
+            emailInput.errors?.['email'] &&
+            emailInput.touched
+          "
+        >
+          Informe um e-mail válido.
+        </small>
+      </div>
+
+      <p
+        class="error-message"
+        *ngIf="mensagemErro"
+      >
+        {{ mensagemErro }}
+      </p>
+
+      <p
+        class="success-message"
+        *ngIf="mensagemSucesso"
+      >
+        {{ mensagemSucesso }}
+      </p>
+
+      <div class="form-actions">
+        <button
+          class="secondary-button"
+          type="button"
+          (click)="voltar()"
+          [disabled]="enviando"
+        >
+          Voltar
+        </button>
+
+        <button
+          class="submit-button"
+          type="submit"
+          [disabled]="enviando"
+        >
+          {{
+            enviando
+              ? 'Salvando...'
+              : 'Salvar alterações'
+          }}
+        </button>
+      </div>
+    </form>
+
+  </section>
+</main>
