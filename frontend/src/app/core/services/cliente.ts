@@ -10,6 +10,7 @@ import {
   ClienteDetalheResponse,
   ClienteListagemResponse,
   ClienteResponse,
+  HistoricoCompraResponse,
 } from '../models/cliente';
 
 import { PaginaResponse } from '../models/paginacao';
@@ -78,6 +79,14 @@ export class ClienteService {
     return this.http.put<ClienteResponse>(
       `${this.apiUrl}/${id}`,
       dados,
+    );
+  }
+
+  buscarHistoricoCompras(
+    id: number,
+  ): Observable<HistoricoCompraResponse[]> {
+    return this.http.get<HistoricoCompraResponse[]>(
+      `${this.apiUrl}/${id}/historico-compras`,
     );
   }
 }
