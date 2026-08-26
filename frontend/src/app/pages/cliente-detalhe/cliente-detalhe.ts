@@ -8,7 +8,11 @@ import {
 import { ActivatedRoute } from '@angular/router';
 
 import { Navbar } from '../../components/navbar/navbar';
-import { ClienteDetalheResponse } from '../../core/models/cliente';
+import {
+  ClienteDetalheResponse,
+  DataVendaHistorico,
+  HistoricoCompraResponse,
+} from '../../core/models/cliente';
 import { ClienteService } from '../../core/services/cliente';
 
 @Component({
@@ -19,9 +23,13 @@ import { ClienteService } from '../../core/services/cliente';
 })
 export class ClienteDetalhe implements OnInit {
   cliente: ClienteDetalheResponse | null = null;
+  historicoCompras: HistoricoCompraResponse[] = [];
 
   carregando = false;
+  carregandoHistorico = false;
+
   mensagemErro = '';
+  mensagemErroHistorico = '';
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -30,7 +38,9 @@ export class ClienteDetalhe implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = Number(
+      this.route.snapshot.paramMap.get('id'),
+    );
 
     if (!Number.isInteger(id) || id <= 0) {
       this.mensagemErro = 'Cliente inválido.';
@@ -38,6 +48,26 @@ export class ClienteDetalhe implements OnInit {
     }
 
     this.carregarCliente(id);
+  }
+
+  formatarDataVenda(
+    data: DataVendaHistorico,
+  ): string {
+    if (Array.isArray(data)) {
+      const [ano, mes, dia] = data;
+
+      return `${this.comDoisDigitos(dia)}/${this.comDoisDigitos(mes)}/${ano}`;
+    }
+
+    const partes = data.split('-');
+
+    if (partes.length === 3) {
+      const [ano, mes, dia] = partes;
+
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    return data;
   }
 
   private carregarCliente(id: number): void {
@@ -49,15 +79,19 @@ export class ClienteDetalhe implements OnInit {
         this.cliente = response;
         this.carregando = false;
 
+        this.carregarHistorico(id);
+
         this.changeDetector.detectChanges();
       },
 
       error: (error: HttpErrorResponse) => {
         this.cliente = null;
+        this.historicoCompras = [];
         this.carregando = false;
 
         if (error.status === 404) {
-          this.mensagemErro = 'Cliente não encontrado.';
+          this.mensagemErro =
+            'Cliente não encontrado.';
         } else if (error.status === 401) {
           this.mensagemErro =
             'Sua sessão expirou. Faça login novamente.';
@@ -75,5 +109,50 @@ export class ClienteDetalhe implements OnInit {
         this.changeDetector.detectChanges();
       },
     });
+  }
+
+  private carregarHistorico(id: number): void {
+    this.carregandoHistorico = true;
+    this.mensagemErroHistorico = '';
+    this.historicoCompras = [];
+
+    this.clienteService
+      .buscarHistoricoCompras(id)
+      .subscribe({
+        next: (response) => {
+          this.historicoCompras = response;
+          this.carregandoHistorico = false;
+
+          this.changeDetector.detectChanges();
+        },
+
+        error: (error: HttpErrorResponse) => {
+          this.historicoCompras = [];
+          this.carregandoHistorico = false;
+
+          if (error.status === 404) {
+            this.mensagemErroHistorico =
+              'Cliente não encontrado.';
+          } else if (error.status === 401) {
+            this.mensagemErroHistorico =
+              'Sua sessão expirou. Faça login novamente.';
+          } else if (error.status === 403) {
+            this.mensagemErroHistorico =
+              'Você não possui permissão para consultar o histórico de compras.';
+          } else if (error.status === 0) {
+            this.mensagemErroHistorico =
+              'Não foi possível conectar ao servidor.';
+          } else {
+            this.mensagemErroHistorico =
+              'Não foi possível carregar o histórico de compras.';
+          }
+
+          this.changeDetector.detectChanges();
+        },
+      });
+  }
+
+  private comDoisDigitos(valor: number): string {
+    return valor.toString().padStart(2, '0');
   }
 }

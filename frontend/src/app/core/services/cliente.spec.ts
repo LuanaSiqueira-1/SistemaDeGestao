@@ -12,6 +12,7 @@ import {
   ClienteAtualizacaoRequest,
   ClienteDetalheResponse,
   ClienteResponse,
+  HistoricoCompraResponse,
 } from '../models/cliente';
 import { ClienteService } from './cliente';
 
@@ -92,6 +93,35 @@ describe('ClienteService', () => {
 
     expect(requisicao.request.method).toBe('PUT');
     expect(requisicao.request.body).toEqual(dados);
+
+    requisicao.flush(resposta);
+  });
+
+  it('should fetch the client purchase history', () => {
+    const resposta: HistoricoCompraResponse[] = [
+      {
+        veiculo: {
+          id: 2,
+          marca: 'Honda',
+          modelo: 'Civic',
+          ano: 2024,
+        },
+        dataVenda: '2026-08-20',
+        valor: 90000,
+      },
+    ];
+
+    service.buscarHistoricoCompras(1).subscribe(
+      (resultado) => {
+        expect(resultado).toEqual(resposta);
+      },
+    );
+
+    const requisicao = httpTesting.expectOne(
+      `${environment.apiUrl}/api/clientes/1/historico-compras`,
+    );
+
+    expect(requisicao.request.method).toBe('GET');
 
     requisicao.flush(resposta);
   });

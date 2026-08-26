@@ -33,3 +33,20 @@ export interface ClienteDetalheResponse {
   telefone: string;
   email: string;
 }
+
+export interface VeiculoHistoricoResponse {
+  id: number;
+  marca: string;
+  modelo: string;
+  ano: number;
+}
+
+export type DataVendaHistorico =
+  | string
+  | [number, number, number];
+
+export interface HistoricoCompraResponse {
+  veiculo: VeiculoHistoricoResponse;
+  dataVenda: DataVendaHistorico;
+  valor: number;
+}

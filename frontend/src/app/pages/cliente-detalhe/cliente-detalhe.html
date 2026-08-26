@@ -4,12 +4,15 @@
   <section class="cliente-card">
 
     <header class="cliente-header">
-      <span class="page-label">DETALHE DO CLIENTE</span>
+      <span class="page-label">
+        DETALHE DO CLIENTE
+      </span>
 
       <h1>Dados do cliente</h1>
 
       <p>
-        Consulte as informações completas do cliente selecionado.
+        Consulte as informações completas e o histórico de
+        compras do cliente selecionado.
       </p>
     </header>
 
@@ -27,39 +30,142 @@
       {{ mensagemErro }}
     </p>
 
-    <article
-      class="cliente-detalhe"
+    <ng-container
       *ngIf="
         !carregando &&
         !mensagemErro &&
         cliente
       "
     >
-      <div class="cliente-titulo">
-        <h2>{{ cliente.nome }}</h2>
+      <article class="cliente-detalhe">
+        <div class="cliente-titulo">
+          <h2>{{ cliente.nome }}</h2>
 
-        <span class="cliente-id">
-          ID {{ cliente.id }}
-        </span>
-      </div>
-
-      <div class="cliente-dados">
-        <div class="dado-item">
-          <strong>CPF</strong>
-          <span>{{ cliente.cpf }}</span>
+          <span class="cliente-id">
+            ID {{ cliente.id }}
+          </span>
         </div>
 
-        <div class="dado-item">
-          <strong>Telefone</strong>
-          <span>{{ cliente.telefone }}</span>
+        <div class="cliente-dados">
+          <div class="dado-item">
+            <strong>CPF</strong>
+            <span>{{ cliente.cpf }}</span>
+          </div>
+
+          <div class="dado-item">
+            <strong>Telefone</strong>
+            <span>{{ cliente.telefone }}</span>
+          </div>
+
+          <div class="dado-item">
+            <strong>E-mail</strong>
+            <span>{{ cliente.email }}</span>
+          </div>
+        </div>
+      </article>
+
+      <section class="historico-section">
+        <header class="historico-header">
+          <span class="section-label">
+            HISTÓRICO DE COMPRAS
+          </span>
+
+          <h2>Veículos adquiridos</h2>
+
+          <p>
+            Compras registradas para este cliente, das mais
+            recentes para as mais antigas.
+          </p>
+        </header>
+
+        <p
+          class="loading-message"
+          *ngIf="carregandoHistorico"
+        >
+          Carregando histórico de compras...
+        </p>
+
+        <p
+          class="error-message"
+          *ngIf="mensagemErroHistorico"
+        >
+          {{ mensagemErroHistorico }}
+        </p>
+
+        <div
+          class="empty-message"
+          *ngIf="
+            !carregandoHistorico &&
+            !mensagemErroHistorico &&
+            historicoCompras.length === 0
+          "
+        >
+          Este cliente ainda não possui compras registradas.
         </div>
 
-        <div class="dado-item">
-          <strong>E-mail</strong>
-          <span>{{ cliente.email }}</span>
+        <div
+          class="historico-lista"
+          *ngIf="
+            !carregandoHistorico &&
+            !mensagemErroHistorico &&
+            historicoCompras.length > 0
+          "
+        >
+          <article
+            class="compra-item"
+            *ngFor="
+              let compra of historicoCompras;
+              let indice = index
+            "
+          >
+            <div class="compra-titulo">
+              <div>
+                <span class="compra-numero">
+                  Compra {{ indice + 1 }}
+                </span>
+
+                <h3>
+                  {{ compra.veiculo.marca }}
+                  {{ compra.veiculo.modelo }}
+                </h3>
+              </div>
+
+              <span class="veiculo-id">
+                Veículo ID {{ compra.veiculo.id }}
+              </span>
+            </div>
+
+            <div class="compra-dados">
+              <div class="dado-item">
+                <strong>Ano do veículo</strong>
+                <span>{{ compra.veiculo.ano }}</span>
+              </div>
+
+              <div class="dado-item">
+                <strong>Data da venda</strong>
+                <span>
+                  {{
+                    formatarDataVenda(
+                      compra.dataVenda
+                    )
+                  }}
+                </span>
+              </div>
+
+              <div class="dado-item">
+                <strong>Valor da compra</strong>
+                <span>
+                  {{
+                    compra.valor
+                      | currency:'BRL'
+                  }}
+                </span>
+              </div>
+            </div>
+          </article>
         </div>
-      </div>
-    </article>
+      </section>
+    </ng-container>
 
   </section>
 </main>
