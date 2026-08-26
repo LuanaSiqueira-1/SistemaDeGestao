@@ -4,7 +4,9 @@
   <section class="veiculo-card">
 
     <header class="veiculo-header">
-      <span class="page-label">CONSULTA DE VEÍCULOS</span>
+      <span class="page-label">
+        CONSULTA DE VEÍCULOS
+      </span>
 
       <h1>Veículos cadastrados</h1>
 
@@ -21,7 +23,9 @@
       <div class="filtros-campos">
 
         <div class="form-group">
-          <label for="termoPesquisa">Marca ou modelo</label>
+          <label for="termoPesquisa">
+            Marca ou modelo
+          </label>
 
           <input
             id="termoPesquisa"
@@ -38,7 +42,9 @@
         </div>
 
         <div class="form-group">
-          <label for="statusSelecionado">Status</label>
+          <label for="statusSelecionado">
+            Status
+          </label>
 
           <select
             id="statusSelecionado"
@@ -47,8 +53,15 @@
             [disabled]="carregando"
           >
             <option value="">Todos</option>
-            <option value="DISPONIVEL">Disponível</option>
-            <option value="VENDIDO">Vendido</option>
+            <option value="DISPONIVEL">
+              Disponível
+            </option>
+            <option value="VENDIDO">
+              Vendido
+            </option>
+            <option value="EM_MANUTENCAO">
+              Em manutenção
+            </option>
           </select>
 
           <small>
@@ -126,9 +139,16 @@
         >
           <div class="veiculo-info">
 
-            <h2>
-              {{ veiculo.marca }} {{ veiculo.modelo }}
-            </h2>
+            <div class="veiculo-titulo">
+              <h2>
+                {{ veiculo.marca }}
+                {{ veiculo.modelo }}
+              </h2>
+
+              <span class="veiculo-id">
+                ID {{ veiculo.id }}
+              </span>
+            </div>
 
             <div class="veiculo-detalhes">
 
@@ -139,7 +159,12 @@
 
               <p>
                 <strong>Preço</strong>
-                <span>{{ veiculo.preco | currency:'BRL' }}</span>
+                <span>
+                  {{
+                    veiculo.preco
+                      | currency:'BRL'
+                  }}
+                </span>
               </p>
 
               <p>
@@ -147,19 +172,33 @@
 
                 <span
                   class="status"
-                  [class.status-disponivel]="veiculo.status === 'DISPONIVEL'"
-                  [class.status-vendido]="veiculo.status === 'VENDIDO'"
-                >
-                  {{
+                  [class.status-disponivel]="
                     veiculo.status === 'DISPONIVEL'
-                      ? 'Disponível'
-                      : veiculo.status === 'VENDIDO'
-                        ? 'Vendido'
-                        : veiculo.status
-                  }}
+                  "
+                  [class.status-vendido]="
+                    veiculo.status === 'VENDIDO'
+                  "
+                  [class.status-manutencao]="
+                    veiculo.status === 'EM_MANUTENCAO'
+                  "
+                >
+                  {{ formatarStatus(veiculo.status) }}
                 </span>
               </p>
 
+            </div>
+
+            <div class="veiculo-acoes">
+              <a
+                class="edit-button"
+                [routerLink]="[
+                  '/veiculos',
+                  veiculo.id,
+                  'editar'
+                ]"
+              >
+                Editar veículo
+              </a>
             </div>
 
           </div>
