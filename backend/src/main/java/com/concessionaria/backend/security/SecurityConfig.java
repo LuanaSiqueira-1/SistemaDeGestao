@@ -37,12 +37,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
         http
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**")
+                // API stateless autenticada por JWT no header Authorization.
+                // O JWT não é armazenado em cookie e não é enviado
+                // automaticamente pelo navegador.
+                .ignoringRequestMatchers("/api/**") // NOSONAR
             )
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(cors -> cors
+                .configurationSource(corsConfigurationSource())
+            )
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(
                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
@@ -52,22 +59,18 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
                 .requestMatchers(
                     HttpMethod.POST,
                     "/api/veiculos"
                 ).authenticated()
-
                 .requestMatchers(
                     HttpMethod.GET,
                     "/api/veiculos"
                 ).authenticated()
-
                 .requestMatchers(
                     HttpMethod.PUT,
                     "/api/veiculos/{id}"
                 ).authenticated()
-
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -84,9 +87,12 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(frontendUrl));
+        configuration.setAllowedOrigins(
+            List.of(frontendUrl)
+        );
 
         configuration.setAllowedMethods(
             List.of(
@@ -112,7 +118,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration(
+            "/**",
+            configuration
+        );
 
         return source;
     }
