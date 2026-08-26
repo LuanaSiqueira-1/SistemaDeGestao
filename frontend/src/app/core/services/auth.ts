@@ -10,7 +10,6 @@ export interface RegisterRequest {
   nome: string;
   email: string;
   senha: string;
-  role: Role;
 }
 
 export interface RegisterResponse {
@@ -36,18 +35,25 @@ export interface AuthResponse {
   providedIn: 'root',
 })
 export class Auth {
-  private readonly apiUrl = `${environment.apiUrl}/api/auth`;
+  private readonly apiUrl =
+    `${environment.apiUrl}/api/auth`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+  ) {}
 
-  register(data: RegisterRequest): Observable<RegisterResponse> {
+  register(
+    data: RegisterRequest,
+  ): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(
       `${this.apiUrl}/register`,
       data,
     );
   }
 
-  login(data: LoginRequest): Observable<AuthResponse> {
+  login(
+    data: LoginRequest,
+  ): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
       `${this.apiUrl}/login`,
       data,

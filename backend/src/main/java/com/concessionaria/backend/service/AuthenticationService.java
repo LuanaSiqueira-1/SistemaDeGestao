@@ -5,6 +5,7 @@ import com.concessionaria.backend.dto.LoginRequest;
 import com.concessionaria.backend.dto.RegisterRequest;
 import com.concessionaria.backend.dto.RegisterResponse;
 import com.concessionaria.backend.exception.EmailJaCadastradoException;
+import com.concessionaria.backend.model.Role;
 import com.concessionaria.backend.model.User;
 import com.concessionaria.backend.repository.UserRepository;
 import com.concessionaria.backend.security.JwtService;
@@ -23,11 +24,13 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationService(UserService userService,
-                                 UserRepository userRepository,
-                                 PasswordEncoder passwordEncoder,
-                                 JwtService jwtService,
-                                 AuthenticationManager authenticationManager) {
+    public AuthenticationService(
+            UserService userService,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService,
+            AuthenticationManager authenticationManager
+    ) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -35,9 +38,9 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    // --- CADASTRO (Luana) ---
     public RegisterResponse cadastrar(RegisterRequest request) {
-        String emailNormalizado = request.getEmail().trim().toLowerCase();
+        String emailNormalizado =
+                request.getEmail().trim().toLowerCase();
 
         if (userService.emailJaCadastrado(emailNormalizado)) {
             throw new EmailJaCadastradoException();
@@ -48,7 +51,7 @@ public class AuthenticationService {
                 request.getNome().trim(),
                 emailNormalizado,
                 passwordEncoder.encode(request.getSenha()),
-                request.getRole()
+                Role.USER
         );
 
         User usuarioSalvo = userService.salvar(user);
@@ -61,7 +64,6 @@ public class AuthenticationService {
         );
     }
 
-    // --- LOGIN (Laysa - Tasks 4 a 9) ---
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -71,7 +73,11 @@ public class AuthenticationService {
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
+                .orElseThrow(
+                        () -> new UsernameNotFoundException(
+                                "Usuário não encontrado."
+                        )
+                );
 
         String jwtToken = jwtService.generateToken(user);
 

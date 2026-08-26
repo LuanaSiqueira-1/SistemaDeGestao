@@ -18,6 +18,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -53,6 +55,12 @@ public class SecurityConfig {
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(
                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
+                )
+                .accessDeniedHandler(
+                    (request, response, accessDeniedException) ->
+                        response.setStatus(
+                            HttpServletResponse.SC_FORBIDDEN
+                        )
                 )
             )
             .authorizeHttpRequests(auth -> auth
