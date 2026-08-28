@@ -1,0 +1,186 @@
+.report-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  color: #1f2937;
+}
+
+.report-content {
+  width: 86%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 0 38px;
+}
+
+.page-header {
+  margin-bottom: 16px;
+}
+
+.page-label {
+  display: inline-block;
+  margin-bottom: 5px;
+  color: #4f46e5;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+}
+
+.page-header h1 {
+  margin: 0 0 5px;
+  color: #111827;
+  font-size: 28px;
+}
+
+.page-header p {
+  max-width: 720px;
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.filter-panel,
+.content-card {
+  padding: 18px 20px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.04);
+}
+
+.filter-panel {
+  margin-bottom: 14px;
+}
+
+.section-heading {
+  margin-bottom: 13px;
+}
+
+.section-heading h2,
+.card-heading h2 {
+  margin: 0 0 3px;
+  color: #111827;
+  font-size: 16px;
+}
+
+.section-heading p,
+.card-heading span {
+  margin: 0;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field label {
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.field-placeholder {
+  min-height: 38px;
+  padding: 0 11px;
+
+  display: flex;
+  align-items: center;
+
+  background: #f9fafb;
+  color: #9ca3af;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  font-size: 12px;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.metric-card {
+  padding: 16px 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 11px;
+}
+
+.metric-card span {
+  display: block;
+  margin-bottom: 7px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.metric-card strong {
+  color: #111827;
+  font-size: 22px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.card-heading {
+  margin-bottom: 11px;
+}
+
+.empty-structure {
+  min-height: 105px;
+  padding: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f9fafb;
+  color: #6b7280;
+
+  border: 1px dashed #d1d5db;
+  border-radius: 9px;
+
+  text-align: center;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .filter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .report-content {
+    width: 92%;
+    padding: 24px 0 36px;
+  }
+
+  .filter-grid,
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header h1 {
+    font-size: 25px;
+  }
+}

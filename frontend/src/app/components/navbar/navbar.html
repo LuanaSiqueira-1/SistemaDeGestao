@@ -1,6 +1,10 @@
 <header class="topbar">
   <div class="brand" routerLink="/dashboard">
-    <span class="brand-icon">🚘</span>
+    <img
+      src="/logo-concessionaria.jpeg"
+      alt="Logo da Concessionária"
+      class="brand-logo"
+    />
 
     <div>
       <strong>Concessionária</strong>
@@ -67,6 +71,22 @@
       class="nav-link"
     >
       Consultar vendas
+    </a>
+
+    <a
+      routerLink="/relatorios/vendas"
+      routerLinkActive="active"
+      class="nav-link"
+    >
+      Relatório de vendas
+    </a>
+
+    <a
+      routerLink="/estoque"
+      routerLinkActive="active"
+      class="nav-link"
+    >
+      Estoque
     </a>
 
     <button

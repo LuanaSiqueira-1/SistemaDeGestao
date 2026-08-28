@@ -8,8 +8,10 @@ import { ClienteDetalhe } from './pages/cliente-detalhe/cliente-detalhe';
 import { ClienteEdicao } from './pages/cliente-edicao/cliente-edicao';
 import { ClienteListagem } from './pages/cliente-listagem/cliente-listagem';
 import { Dashboard } from './pages/dashboard/dashboard';
+import { EstoqueResumo } from './pages/estoque-resumo/estoque-resumo';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
+import { RelatorioVendas } from './pages/relatorio-vendas/relatorio-vendas';
 import { VeiculoCadastro } from './pages/veiculo-cadastro/veiculo-cadastro';
 import { VeiculoEdicao } from './pages/veiculo-edicao/veiculo-edicao';
 import { VeiculoListagem } from './pages/veiculo-listagem/veiculo-listagem';
@@ -29,6 +31,16 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'relatorios/vendas',
+    component: RelatorioVendas,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'estoque',
+    component: EstoqueResumo,
     canActivate: [authGuard],
   },
   {
