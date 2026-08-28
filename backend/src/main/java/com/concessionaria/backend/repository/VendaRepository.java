@@ -1,5 +1,6 @@
 package com.concessionaria.backend.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,23 @@ import org.springframework.stereotype.Repository;
 public interface VendaRepository extends JpaRepository<Venda, Long> {
 
     List<Venda> findByClienteIdOrderByDataVendaDesc(Long clienteId);
+
+    @Query("""
+            SELECT venda
+            FROM Venda venda
+            JOIN FETCH venda.veiculo veiculo
+            WHERE venda.dataVenda >= :dataInicio
+            AND venda.dataVenda < :dataFim
+            AND (
+                :marca = ''
+                OR LOWER(veiculo.marca) = LOWER(:marca)
+            )
+            """)
+    List<Venda> buscarParaRelatorio(
+            @Param("dataInicio") LocalDate dataInicio,
+            @Param("dataFim") LocalDate dataFim,
+            @Param("marca") String marca
+    );
 
     @Query("""
             SELECT venda
