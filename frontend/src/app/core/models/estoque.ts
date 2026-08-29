@@ -1,6 +1,5 @@
 export interface EstoqueFiltros {
   marca?: string;
-  categoria?: string;
   status?: string;
 }
 
@@ -18,6 +17,5 @@ export interface EstoqueResumoResponse {
   valorTotalDisponivel: number;
   porMarca: DistribuicaoEstoque[];
   porModelo: DistribuicaoEstoque[];
-  porCategoria: DistribuicaoEstoque[];
   porFaixaPreco: DistribuicaoEstoque[];
 }

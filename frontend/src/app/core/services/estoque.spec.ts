@@ -52,13 +52,11 @@ describe('EstoqueService', () => {
       valorTotalDisponivel: 720000,
       porMarca: [],
       porModelo: [],
-      porCategoria: [],
       porFaixaPreco: [],
     };
 
     service.consultar({
       marca: ' Toyota ',
-      categoria: ' Sedan ',
       status: ' DISPONIVEL ',
     }).subscribe(
       (resultado) => {
@@ -71,7 +69,6 @@ describe('EstoqueService', () => {
         request.url ===
           `${environment.apiUrl}/api/estoque/resumo` &&
         request.params.get('marca') === 'Toyota' &&
-        request.params.get('categoria') === 'Sedan' &&
         request.params.get('status') === 'DISPONIVEL',
     );
 
@@ -101,7 +98,32 @@ describe('EstoqueService', () => {
       valorTotalDisponivel: 0,
       porMarca: [],
       porModelo: [],
-      porCategoria: [],
+      porFaixaPreco: [],
+    });
+  });
+
+  it('should omit blank optional filters', () => {
+    service.consultar({
+      marca: '   ',
+      status: '',
+    }).subscribe();
+
+    const requisicao = httpTesting.expectOne(
+      `${environment.apiUrl}/api/estoque/resumo`,
+    );
+
+    expect(
+      requisicao.request.params.keys().length,
+    ).toBe(0);
+
+    requisicao.flush({
+      quantidadeTotal: 0,
+      quantidadeDisponivel: 0,
+      quantidadeIndisponivel: 0,
+      percentualDisponivel: 0,
+      valorTotalDisponivel: 0,
+      porMarca: [],
+      porModelo: [],
       porFaixaPreco: [],
     });
   });

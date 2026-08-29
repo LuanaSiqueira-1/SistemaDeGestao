@@ -34,15 +34,6 @@ export class EstoqueService {
       params = params.set('marca', marca);
     }
 
-    const categoria = filtros.categoria?.trim();
-
-    if (categoria) {
-      params = params.set(
-        'categoria',
-        categoria,
-      );
-    }
-
     const status = filtros.status?.trim();
 
     if (status) {
