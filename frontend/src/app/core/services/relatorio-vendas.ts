@@ -42,15 +42,6 @@ export class RelatorioVendasService {
       params = params.set('marca', marca);
     }
 
-    const categoria = filtros.categoria?.trim();
-
-    if (categoria) {
-      params = params.set(
-        'categoria',
-        categoria,
-      );
-    }
-
     return this.http.get<RelatorioVendasResponse>(
       this.apiUrl,
       { params },

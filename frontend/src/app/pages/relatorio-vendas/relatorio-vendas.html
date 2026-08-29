@@ -23,82 +23,391 @@
           <h2>Filtros do relatório</h2>
 
           <p>
-            A estrutura está preparada para período,
-            marca e categoria.
+            Consulte o desempenho por ano, semestre
+            e marca.
           </p>
         </div>
       </div>
 
-      <div class="filter-grid">
-        <div class="field">
-          <label>Ano</label>
-          <div class="field-placeholder">Ano</div>
-        </div>
+      <form
+        class="filter-form"
+        (ngSubmit)="consultar()"
+        autocomplete="off"
+      >
+        <div class="filter-grid">
+          <div class="field">
+            <label for="ano">
+              Ano
+            </label>
 
-        <div class="field">
-          <label>Semestre</label>
-          <div class="field-placeholder">
-            Ano inteiro / 1º / 2º
+            <input
+              id="ano"
+              type="number"
+              name="ano"
+              [(ngModel)]="ano"
+              min="1000"
+              max="9999"
+              step="1"
+              placeholder="Ex.: 2026"
+              [disabled]="carregando"
+              required
+            />
+
+            <small>
+              Informe o ano das vendas.
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="semestre">
+              Semestre
+            </label>
+
+            <select
+              id="semestre"
+              name="semestre"
+              [(ngModel)]="semestreSelecionado"
+              [disabled]="carregando"
+            >
+              <option value="">
+                Ano inteiro
+              </option>
+
+              <option value="1">
+                1º semestre
+              </option>
+
+              <option value="2">
+                2º semestre
+              </option>
+            </select>
+
+            <small>
+              Opcional. Sem seleção, considera o ano inteiro.
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="marca">
+              Marca
+            </label>
+
+            <input
+              id="marca"
+              type="text"
+              name="marca"
+              [(ngModel)]="marca"
+              placeholder="Ex.: Toyota"
+              [disabled]="carregando"
+            />
+
+            <small>
+              Opcional. Informe uma marca específica.
+            </small>
           </div>
         </div>
 
-        <div class="field">
-          <label>Marca</label>
-          <div class="field-placeholder">
-            Todas as marcas
-          </div>
-        </div>
+        <div class="filter-actions">
+          <button
+            class="primary-button"
+            type="submit"
+            [disabled]="carregando"
+          >
+            {{ carregando ? 'Consultando...' : 'Consultar' }}
+          </button>
 
-        <div class="field">
-          <label>Categoria</label>
-          <div class="field-placeholder">
-            Todas as categorias
-          </div>
+          <button
+            class="secondary-button"
+            type="button"
+            (click)="limparFiltros()"
+            [disabled]="carregando"
+          >
+            Limpar filtros
+          </button>
         </div>
+      </form>
+    </section>
+
+    <section
+      class="status-panel loading-panel"
+      *ngIf="carregando"
+    >
+      <div class="spinner"></div>
+
+      <div>
+        <strong>Carregando relatório</strong>
+        <p>
+          Consultando os indicadores de vendas.
+        </p>
       </div>
     </section>
 
-    <section class="metric-grid">
-      <article class="metric-card">
-        <span>Quantidade vendida</span>
-        <strong>—</strong>
-      </article>
+    <section
+      class="status-panel error-panel"
+      *ngIf="!carregando && mensagemErro"
+    >
+      <div>
+        <strong>Não foi possível concluir a consulta</strong>
 
-      <article class="metric-card">
-        <span>Valor total</span>
-        <strong>—</strong>
-      </article>
-
-      <article class="metric-card">
-        <span>Ticket médio</span>
-        <strong>—</strong>
-      </article>
+        <p>
+          {{ mensagemErro }}
+        </p>
+      </div>
     </section>
 
-    <section class="content-grid">
-      <article class="content-card">
-        <div class="card-heading">
-          <h2>Distribuição das vendas</h2>
-          <span>Categoria, marca e modelo</span>
-        </div>
+    <section
+      class="status-panel empty-panel"
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        consultado &&
+        semVendas
+      "
+    >
+      <div>
+        <strong>Nenhuma venda encontrada</strong>
 
-        <div class="empty-structure">
-          Estrutura preparada para os agrupamentos
-          calculados pela API.
-        </div>
-      </article>
-
-      <article class="content-card">
-        <div class="card-heading">
-          <h2>Ranking de modelos</h2>
-          <span>Mais e menos vendidos</span>
-        </div>
-
-        <div class="empty-structure">
-          Estrutura preparada para os rankings
-          retornados pelo backend.
-        </div>
-      </article>
+        <p>
+          Não existem vendas para os filtros selecionados.
+          Tente outro período ou remova o filtro de marca.
+        </p>
+      </div>
     </section>
+
+    <ng-container
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        possuiVendas &&
+        relatorio
+      "
+    >
+      <div class="result-context">
+        <span>
+          Período analisado
+        </span>
+
+        <strong>
+          {{ periodoDoRelatorio() }}
+        </strong>
+      </div>
+
+      <section class="metric-grid">
+        <article class="metric-card">
+          <span>Quantidade vendida</span>
+
+          <strong>
+            {{ relatorio.quantidadeVendas }}
+          </strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Valor total</span>
+
+          <strong>
+            {{ relatorio.valorTotal | currency:'BRL' }}
+          </strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Ticket médio</span>
+
+          <strong>
+            {{ relatorio.ticketMedio | currency:'BRL' }}
+          </strong>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Vendas por marca</h2>
+
+              <span>
+                Distribuição consolidada por marca.
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="table-wrapper"
+            *ngIf="relatorio.vendasPorMarca.length > 0"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Marca</th>
+                  <th>Quantidade</th>
+                  <th>Valor total</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  *ngFor="
+                    let item of relatorio.vendasPorMarca
+                  "
+                >
+                  <td>{{ item.marca }}</td>
+
+                  <td>{{ item.quantidade }}</td>
+
+                  <td>
+                    {{ item.valorTotal | currency:'BRL' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p
+            class="section-empty"
+            *ngIf="relatorio.vendasPorMarca.length === 0"
+          >
+            Nenhum agrupamento por marca disponível.
+          </p>
+        </article>
+
+        <article class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Vendas por modelo</h2>
+
+              <span>
+                Quantidade e valor por modelo vendido.
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="table-wrapper"
+            *ngIf="relatorio.vendasPorModelo.length > 0"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Qtd.</th>
+                  <th>Valor total</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  *ngFor="
+                    let item of relatorio.vendasPorModelo
+                  "
+                >
+                  <td>{{ item.marca }}</td>
+
+                  <td>{{ item.modelo }}</td>
+
+                  <td>{{ item.quantidade }}</td>
+
+                  <td>
+                    {{ item.valorTotal | currency:'BRL' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p
+            class="section-empty"
+            *ngIf="relatorio.vendasPorModelo.length === 0"
+          >
+            Nenhum agrupamento por modelo disponível.
+          </p>
+        </article>
+
+        <article class="content-card ranking-card">
+          <div class="card-heading">
+            <div>
+              <h2>Mais vendidos</h2>
+
+              <span>
+                Modelo ou modelos com maior volume de vendas.
+              </span>
+            </div>
+          </div>
+
+          <div class="ranking-list">
+            <div
+              class="ranking-item"
+              *ngFor="
+                let item of relatorio.maisVendidos
+              "
+            >
+              <div>
+                <strong>{{ item.modelo }}</strong>
+
+                <span>{{ item.marca }}</span>
+              </div>
+
+              <span class="ranking-value">
+                {{ item.quantidade }}
+                {{
+                  item.quantidade === 1
+                    ? 'venda'
+                    : 'vendas'
+                }}
+              </span>
+            </div>
+          </div>
+
+          <p
+            class="section-empty"
+            *ngIf="relatorio.maisVendidos.length === 0"
+          >
+            Ranking indisponível para esta consulta.
+          </p>
+        </article>
+
+        <article class="content-card ranking-card">
+          <div class="card-heading">
+            <div>
+              <h2>Menos vendidos</h2>
+
+              <span>
+                Menor volume positivo entre os modelos vendidos.
+              </span>
+            </div>
+          </div>
+
+          <div class="ranking-list">
+            <div
+              class="ranking-item"
+              *ngFor="
+                let item of relatorio.menosVendidos
+              "
+            >
+              <div>
+                <strong>{{ item.modelo }}</strong>
+
+                <span>{{ item.marca }}</span>
+              </div>
+
+              <span class="ranking-value">
+                {{ item.quantidade }}
+                {{
+                  item.quantidade === 1
+                    ? 'venda'
+                    : 'vendas'
+                }}
+              </span>
+            </div>
+          </div>
+
+          <p
+            class="section-empty"
+            *ngIf="relatorio.menosVendidos.length === 0"
+          >
+            Ranking indisponível para esta consulta.
+          </p>
+        </article>
+      </section>
+    </ng-container>
   </main>
 </div>

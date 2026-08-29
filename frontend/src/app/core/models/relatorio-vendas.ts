@@ -2,13 +2,6 @@ export interface RelatorioVendasFiltros {
   ano: number;
   semestre?: 1 | 2;
   marca?: string;
-  categoria?: string;
-}
-
-export interface VendasPorCategoria {
-  categoria: string;
-  quantidade: number;
-  valorTotal?: number;
 }
 
 export interface VendasPorMarca {
@@ -36,7 +29,6 @@ export interface RelatorioVendasResponse {
   quantidadeVendas: number;
   valorTotal: number;
   ticketMedio: number;
-  vendasPorCategoria?: VendasPorCategoria[];
   vendasPorMarca: VendasPorMarca[];
   vendasPorModelo: VendasPorModelo[];
   maisVendidos: RankingModelo[];
