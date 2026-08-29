@@ -85,6 +85,18 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(StatusEstoqueInvalidoException.class)
+    public ResponseEntity<ErroResponse> handleStatusEstoqueInvalido(
+            StatusEstoqueInvalidoException exception
+    ) {
+
+        return criarResposta(
+                HttpStatus.BAD_REQUEST,
+                "Dados inválidos",
+                exception.getMessage()
+        );
+    }
+
     private ResponseEntity<ErroResponse> criarResposta(
             HttpStatus status,
             String erro,
