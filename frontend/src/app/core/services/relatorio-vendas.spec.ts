@@ -88,7 +88,6 @@ describe('RelatorioVendasService', () => {
     service.consultar({
       ano: 2026,
       marca: '   ',
-      categoria: '',
     }).subscribe();
 
     const requisicao = httpTesting.expectOne(
@@ -101,10 +100,6 @@ describe('RelatorioVendasService', () => {
 
     expect(
       requisicao.request.params.has('marca'),
-    ).toBe(false);
-
-    expect(
-      requisicao.request.params.has('categoria'),
     ).toBe(false);
 
     requisicao.flush({
