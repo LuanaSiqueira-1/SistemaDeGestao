@@ -3,18 +3,16 @@
 
   <main class="stock-content">
     <header class="page-header">
-      <div>
-        <span class="page-label">
-          US14 · ACOMPANHAMENTO DO ESTOQUE
-        </span>
+      <span class="page-label">
+        CONTROLE DE ESTOQUE
+      </span>
 
-        <h1>Acompanhamento do estoque</h1>
+      <h1>Acompanhamento do estoque</h1>
 
-        <p>
-          Visualize a disponibilidade e a distribuição
-          consolidada dos veículos cadastrados.
-        </p>
-      </div>
+      <p>
+        Visualize a disponibilidade e a distribuição
+        consolidada dos veículos cadastrados.
+      </p>
     </header>
 
     <section class="filter-panel">
@@ -22,90 +20,332 @@
         <h2>Filtros do estoque</h2>
 
         <p>
-          Estrutura preparada para marca, categoria
-          e status.
+          Consulte o estoque por marca e status.
         </p>
       </div>
 
-      <div class="filter-grid">
-        <div class="field">
-          <label>Marca</label>
-          <div class="field-placeholder">
-            Todas as marcas
+      <form
+        class="filter-form"
+        (ngSubmit)="consultar()"
+        autocomplete="off"
+      >
+        <div class="filter-grid">
+          <div class="field">
+            <label for="marca">
+              Marca
+            </label>
+
+            <input
+              id="marca"
+              type="text"
+              name="marca"
+              [(ngModel)]="marca"
+              placeholder="Ex.: Toyota"
+              [disabled]="carregando"
+            />
+
+            <small>
+              Opcional. Informe uma marca específica.
+            </small>
+          </div>
+
+          <div class="field">
+            <label for="status">
+              Status
+            </label>
+
+            <select
+              id="status"
+              name="status"
+              [(ngModel)]="statusSelecionado"
+              [disabled]="carregando"
+            >
+              <option value="">
+                Todos os status
+              </option>
+
+              <option value="DISPONIVEL">
+                Disponível
+              </option>
+
+              <option value="VENDIDO">
+                Vendido
+              </option>
+
+              <option value="EM_MANUTENCAO">
+                Em manutenção
+              </option>
+            </select>
+
+            <small>
+              Opcional. Filtre pela situação atual do veículo.
+            </small>
           </div>
         </div>
 
-        <div class="field">
-          <label>Categoria</label>
-          <div class="field-placeholder">
-            Todas as categorias
-          </div>
-        </div>
+        <div class="filter-actions">
+          <button
+            class="primary-button"
+            type="submit"
+            [disabled]="carregando"
+          >
+            {{ carregando ? 'Consultando...' : 'Consultar' }}
+          </button>
 
-        <div class="field">
-          <label>Status</label>
-          <div class="field-placeholder">
-            Todos os status
-          </div>
+          <button
+            class="secondary-button"
+            type="button"
+            (click)="limparFiltros()"
+            [disabled]="carregando"
+          >
+            Limpar filtros
+          </button>
         </div>
+      </form>
+    </section>
+
+    <section
+      class="status-panel"
+      *ngIf="carregando"
+    >
+      <div class="spinner"></div>
+
+      <div>
+        <strong>Carregando estoque</strong>
+
+        <p>
+          Consultando os indicadores consolidados dos veículos.
+        </p>
       </div>
     </section>
 
-    <section class="metric-grid">
-      <article class="metric-card">
-        <span>Total de veículos</span>
-        <strong>—</strong>
-      </article>
+    <section
+      class="status-panel error-panel"
+      *ngIf="!carregando && mensagemErro"
+    >
+      <div>
+        <strong>Não foi possível concluir a consulta</strong>
 
-      <article class="metric-card">
-        <span>Disponíveis</span>
-        <strong>—</strong>
-      </article>
-
-      <article class="metric-card">
-        <span>Indisponíveis</span>
-        <strong>—</strong>
-      </article>
-
-      <article class="metric-card">
-        <span>Disponibilidade</span>
-        <strong>—</strong>
-      </article>
-
-      <article class="metric-card wide-card">
-        <span>Valor total disponível</span>
-        <strong>—</strong>
-      </article>
+        <p>
+          {{ mensagemErro }}
+        </p>
+      </div>
     </section>
 
-    <section class="distribution-grid">
-      <article class="distribution-card">
-        <h2>Por marca</h2>
-        <p>
-          Distribuição total e disponível por marca.
-        </p>
-      </article>
+    <section
+      class="status-panel empty-panel"
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        consultado &&
+        estoqueVazio
+      "
+    >
+      <div>
+        <strong>Nenhum veículo encontrado</strong>
 
-      <article class="distribution-card">
-        <h2>Por modelo</h2>
         <p>
-          Distribuição total e disponível por modelo.
+          Não existem veículos para os filtros selecionados.
+          Tente remover ou alterar os filtros.
         </p>
-      </article>
-
-      <article class="distribution-card">
-        <h2>Por categoria</h2>
-        <p>
-          Distribuição total e disponível por categoria.
-        </p>
-      </article>
-
-      <article class="distribution-card">
-        <h2>Por faixa de preço</h2>
-        <p>
-          Distribuição conforme as faixas contratadas.
-        </p>
-      </article>
+      </div>
     </section>
+
+    <ng-container
+      *ngIf="
+        !carregando &&
+        !mensagemErro &&
+        possuiVeiculos &&
+        relatorio
+      "
+    >
+      <section class="metric-grid">
+        <article class="metric-card">
+          <span>Total de veículos</span>
+
+          <strong>
+            {{ relatorio.quantidadeTotal }}
+          </strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Disponíveis</span>
+
+          <strong>
+            {{ relatorio.quantidadeDisponivel }}
+          </strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Indisponíveis</span>
+
+          <strong>
+            {{ relatorio.quantidadeIndisponivel }}
+          </strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Disponibilidade</span>
+
+          <strong>
+            {{
+              relatorio.percentualDisponivel
+                | number:'1.0-2'
+            }}%
+          </strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Valor total disponível</span>
+
+          <strong>
+            {{
+              relatorio.valorTotalDisponivel
+                | currency:'BRL'
+            }}
+          </strong>
+        </article>
+      </section>
+
+      <section class="distribution-grid">
+        <article class="distribution-card">
+          <div class="card-heading">
+            <h2>Por marca</h2>
+
+            <p>
+              Total e disponibilidade por marca.
+            </p>
+          </div>
+
+          <div
+            class="table-wrapper"
+            *ngIf="relatorio.porMarca.length > 0"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Marca</th>
+                  <th>Total</th>
+                  <th>Disponíveis</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  *ngFor="
+                    let item of relatorio.porMarca
+                  "
+                >
+                  <td>{{ item.nome }}</td>
+                  <td>{{ item.quantidadeTotal }}</td>
+                  <td>{{ item.quantidadeDisponivel }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p
+            class="section-empty"
+            *ngIf="relatorio.porMarca.length === 0"
+          >
+            Nenhum agrupamento por marca disponível.
+          </p>
+        </article>
+
+        <article class="distribution-card">
+          <div class="card-heading">
+            <h2>Por modelo</h2>
+
+            <p>
+              Total e disponibilidade por modelo.
+            </p>
+          </div>
+
+          <div
+            class="table-wrapper"
+            *ngIf="relatorio.porModelo.length > 0"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Modelo</th>
+                  <th>Total</th>
+                  <th>Disponíveis</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  *ngFor="
+                    let item of relatorio.porModelo
+                  "
+                >
+                  <td>{{ item.nome }}</td>
+                  <td>{{ item.quantidadeTotal }}</td>
+                  <td>{{ item.quantidadeDisponivel }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p
+            class="section-empty"
+            *ngIf="relatorio.porModelo.length === 0"
+          >
+            Nenhum agrupamento por modelo disponível.
+          </p>
+        </article>
+
+        <article class="distribution-card full-card">
+          <div class="card-heading">
+            <h2>Por faixa de preço</h2>
+
+            <p>
+              Distribuição conforme as faixas definidas pela API.
+            </p>
+          </div>
+
+          <div
+            class="table-wrapper"
+            *ngIf="relatorio.porFaixaPreco.length > 0"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Faixa de preço</th>
+                  <th>Total</th>
+                  <th>Disponíveis</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  *ngFor="
+                    let item of relatorio.porFaixaPreco
+                  "
+                >
+                  <td>
+                    {{ formatarFaixaPreco(item.nome) }}
+                  </td>
+
+                  <td>{{ item.quantidadeTotal }}</td>
+
+                  <td>
+                    {{ item.quantidadeDisponivel }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p
+            class="section-empty"
+            *ngIf="relatorio.porFaixaPreco.length === 0"
+          >
+            Nenhuma distribuição por faixa de preço disponível.
+          </p>
+        </article>
+      </section>
+    </ng-container>
   </main>
 </div>
