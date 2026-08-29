@@ -1,4 +1,4 @@
-name: Backend CI & SonarQube
+name: Backend CI & SonarCloud
 
 on:
   push:
@@ -62,7 +62,7 @@ jobs:
       - name: Executar build, testes e cobertura
         working-directory: backend
         run: |
-          ./mvnw verify \
+          ./mvnw clean verify \
             -Dspring.profiles.active=test
 
       # Executa o Sonar somente quando o código estiver integrado na main
