@@ -128,7 +128,7 @@ class VeiculoServiceTest {
         assertThat(resposta.modelo()).isEqualTo("Civic");
         assertThat(resposta.ano()).isEqualTo(2024);
         assertThat(resposta.cor()).isEqualTo("Prata");
-        assertThat(resposta.quilometragem()).isEqualTo(0L);
+        assertThat(resposta.quilometragem()).isZero();
         assertThat(resposta.preco())
                 .isEqualByComparingTo("120000.00");
         assertThat(resposta.status())
